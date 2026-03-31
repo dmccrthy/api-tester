@@ -20,8 +20,7 @@ import View from "./views/View.ts";
 import Window from "./views/Window.ts";
 
 // Enable X10 mouse reporting (so we can see any mouse clicks)
-// also disable cursor
-View.write("\x1b[?9h" + ANSI.cursor.disable);
+View.write(ANSI.mouseTracking.enable + ANSI.cursor.disable);
 
 try {
     // input is passed from the InputHandler to the actual window which controls that app
@@ -33,8 +32,7 @@ try {
     // placeholder for now. Should expand on this more later
     console.error(error);
 } finally {
-    // cleanup (disable X10 and enable cursor)
-    View.write("\x1b[?9l" + ANSI.cursor.enable)
+    View.write(ANSI.mouseTracking.disable + ANSI.cursor.enable)
 }
 
 

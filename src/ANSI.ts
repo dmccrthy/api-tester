@@ -8,9 +8,16 @@
  */
 
 const ANSI = {
+    // NOTE: cursor/mousetracking require the use of private modes.
+    // these should be available in unix-like terminals (but it can vary).
+    // we're using normal tracking here since all we care about is clicks.
     cursor: { 
         enable: "\x1b[?25h",
         disable: "\x1b[?25l"
+    },
+    mouseTracking: {
+        enable: "\x1b[?1000h",
+        disable: "\x1b[?1000l"
     },
 
     clearScreen: "\x1b[2J",
