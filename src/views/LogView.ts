@@ -6,6 +6,8 @@
  * @author Dan McCarthy
  */
 
+import ANSI from "../ANSI.ts";
+import { Input } from "../input/InputTypes.ts";
 import View from "./View.ts";
 
 export default class LogView extends View {
@@ -28,27 +30,31 @@ export default class LogView extends View {
         this.render();
     }
 
-    public render(message?: string): void {
+    public render(input?: Input): void {
         // update log list with new message (and remove old logs)
-        if (message) {
-            this.logs.push(message + "\n");
+        if (input) {
+            this.logs.push(JSON.stringify(input) + "\n");
         }
 
-        if (this.logs.length >= this.height) {
+        if (input?.type === "mouse") {
+            this.logs.push(`CLICK ON ELEMENT - ${this.checkBounds([input.x, input.y])}\n`)
+        }
+
+        // remove any extra logs past height limit
+        while (this.logs.length >= this.height) {
             this.logs.shift();
         }
 
         let currRow = this.corner[1];
 
         // print out header messages
-        View.write(`\x1b[${currRow++};${this.corner[0]}H` + "Input Logs" + "\n")
-        View.write(`\x1b[${currRow++};${this.corner[0]}H` + "-".repeat(this.width) + "\n");
+        View.write(ANSI.updateCursor([this.corner[0], currRow++]) + "Input Logs" + "\n")
+        View.write(ANSI.updateCursor([this.corner[0], currRow++]) + "-".repeat(this.width) + "\n");
 
         // print out logs
         for (const log of this.logs) {
-            // this is really (really) terrible. but it works.
             // I will be refactoring this in the near future
-            View.write(`\x1b[${currRow++};${this.corner[0]}H\x1b[2K` + log);
+            View.write(ANSI.updateCursor([this.corner[0], currRow++]) + ANSI.clearLine + log);
         }
     }
 
