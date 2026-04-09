@@ -7,9 +7,9 @@
  * the final project for this class as handling input and how it interacts with
  * the UI is going to be the hardest part. For know you can run his program using
  * the command below:
- * 
+ *
  *  deno run src/main.ts
- * 
+ *
  * @author Dan McCarthy
  */
 
@@ -23,17 +23,16 @@ import Window from "./views/Window.ts";
 View.write(ANSI.mouseTracking.enable + ANSI.cursor.disable);
 
 try {
-    // input is passed from the InputHandler to the actual window which controls that app
-    const window = new Window();
-    const input = new inputHandler((input: Input) => { window.handleInput(input) })
+  // input is passed from the InputHandler to the actual window which controls that app
+  const window = new Window();
+  const input = new inputHandler((input: Input) => {
+    window.handleInput(input);
+  });
 
-    await input.run();
-} catch(error) {
-    // placeholder for now. Should expand on this more later
-    console.error(error);
+  await input.run();
+} catch (error) {
+  // placeholder for now. Should expand on this more later
+  console.error(error);
 } finally {
-    View.write(ANSI.mouseTracking.disable + ANSI.cursor.enable)
+  View.write(ANSI.mouseTracking.disable + ANSI.cursor.enable);
 }
-
-
-
