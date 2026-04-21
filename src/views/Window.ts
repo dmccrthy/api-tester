@@ -23,13 +23,21 @@ export default class Window extends View {
 
     // initialize elements
     this.children = initForm(columns);
+    this.render();
   }
 
-  public render(): void {}
+  /**
+   * Window will try to rerender all elements in the application.
+   */
+  public render(): void {
+    for (const element of this.children) {
+      element.render();
+    }
+  }
 
   public handleInput(input: Input): void {
     if (input.type === "mouse") {
-      let element = this.checkBounds([input.x, input.y]);
+      const element = this.checkBounds([input.x, input.y]);
 
       if (!element || element == this) {
         this.selected = null;
@@ -43,5 +51,8 @@ export default class Window extends View {
       // for non-mouse input is passed to the current element
       this.selected?.handleInput(input);
     }
+
+    // rerender all elements in the application
+    this.render();
   }
 }

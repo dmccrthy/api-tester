@@ -25,7 +25,7 @@ const ANSI = {
   // Text Styling
   textGreen: "\x1b[1;32m",
   textRed: "\x1b[1;31m",
-  textBlack: "\x1b[1:30m",
+  textBlack: "\x1b[1;30m",
   bgWhite: "\x1b[47m",
   resetColor: "\x1b[0m",
 

@@ -5,7 +5,6 @@
  */
 
 import ANSI from "../ANSI.ts";
-import { Input } from "../input/InputTypes.ts";
 import View from "./View.ts";
 
 export default class Label extends View {
@@ -14,9 +13,6 @@ export default class Label extends View {
   constructor(corner: [number, number], label: string) {
     super(corner, label.length, 1);
     this.label = label;
-
-    // handle initial render
-    this.render();
   }
 
   public render(): void {
@@ -25,5 +21,5 @@ export default class Label extends View {
     );
   }
 
-  public handleInput(input: Input): void {}
+  public handleInput(): void {}
 }

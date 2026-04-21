@@ -12,7 +12,7 @@ import Button from "./interactive/Button.ts";
 import Label from "./Label.ts";
 import ANSI from "../ANSI.ts";
 
-let ELEMENTS: View[] = [];
+const ELEMENTS: View[] = [];
 
 export default function initForm(columns: number): View[] {
   ELEMENTS.push(
@@ -43,7 +43,4 @@ function submitForm(): void {
   } else {
     label.label = ANSI.textRed + "FAIL" + ANSI.resetColor;
   }
-
-  input.render();
-  label.render();
 }

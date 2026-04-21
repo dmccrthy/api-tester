@@ -16,9 +16,6 @@ export default class Button extends View {
     super(corner, label.length + 4, 3);
     this.label = label;
     this.callback = callback;
-
-    // handle initial render
-    this.render();
   }
 
   public render(): void {
@@ -28,8 +25,7 @@ export default class Button extends View {
     View.write(
       ANSI.updateCursor([x, y]) + ANSI.bgWhite + ANSI.textBlack + border +
         "\n" +
-        ANSI.updateCursor([x, y + 1]) + "| " + ANSI.resetColor + this.label +
-        ANSI.bgWhite + ANSI.textBlack + " |" + "\n" +
+        ANSI.updateCursor([x, y + 1]) + "| " + this.label + " |" + "\n" +
         ANSI.updateCursor([x, y + 2]) + border + ANSI.resetColor,
     );
   }
@@ -37,7 +33,6 @@ export default class Button extends View {
   public handleInput(input: Input): void {
     if (input.type === "mouse") {
       this.callback();
-      this.render();
     }
   }
 }

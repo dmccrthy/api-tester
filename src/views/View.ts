@@ -51,7 +51,7 @@ export default abstract class View {
 
     // if its within the bounds of a child element return that
     for (const element of this.children) {
-      let result = element.checkBounds(coords);
+      const result = element.checkBounds(coords);
 
       if (result) return result;
     }

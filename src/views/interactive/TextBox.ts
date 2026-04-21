@@ -16,9 +16,6 @@ export default class TextBox extends View {
     super(corner, width, 4);
     this.header = header;
     this.content = "";
-
-    // handle initial render
-    this.render();
   }
 
   public render(): void {
@@ -47,7 +44,5 @@ export default class TextBox extends View {
     } else {
       this.content += input.value;
     }
-
-    this.render();
   }
 }

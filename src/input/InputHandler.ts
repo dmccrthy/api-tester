@@ -28,7 +28,7 @@ export default class InputHandler {
       // single char input is relatively easy to handle
       // we do have to look out for special chars like ESC and Backspace
       if (chunk.length === 1) {
-        let input: KeyInput = {
+        const input: KeyInput = {
           type: "special",
           value: "",
         };
