@@ -10,10 +10,18 @@ import { Input } from "../input/InputTypes.ts";
 export default abstract class View {
   // corner represents (x, y) of top-left corner
   // width and height represent the number of rows/columns covered by the element
-  // NOTE: x=columns, while y=rows inside the terminal
-  protected abstract corner: [number, number];
-  protected abstract width: number;
-  protected abstract height: number;
+  //* NOTE: x=columns, while y=rows inside the terminal
+  protected corner: [number, number];
+  protected width: number;
+  protected height: number;
+  protected children: View[];
+
+  constructor(corner: [number, number], width: number, height: number) {
+    this.corner = corner;
+    this.width = width;
+    this.height = height;
+    this.children = [];
+  }
 
   // trigger a rerender of a specific UI element
   public abstract render(): void;
@@ -24,18 +32,31 @@ export default abstract class View {
 
   /**
    * CheckBounds uses corner/width/height to determine if a coordinate
-   * is within its bounds (used for clicking on elements)
+   * is within its bounds (used for clicking on elements). This is
+   * recursive as it will check the bounds of its children.
    *
    * @param coords coordinate in format [x, y]
-   * @return {boolean} true if within bounds (false otherwise)
+   * @return {View | null} Returns the element its within or null
    */
-  public checkBounds(coords: [number, number]): boolean {
+  public checkBounds(coords: [number, number]): View | null {
     const withinX = (coords[0] >= this.corner[0]) &&
       (coords[0] <= this.corner[0] + this.width);
+
     const withinY = (coords[1] >= this.corner[1]) &&
       (coords[1] <= this.corner[1] + this.height);
 
-    return withinX && withinY;
+    if (!(withinX && withinY)) {
+      return null;
+    }
+
+    // if its within the bounds of a child element return that
+    for (const element of this.children) {
+      let result = element.checkBounds(coords);
+
+      if (result) return result;
+    }
+
+    return this;
   }
 
   /**

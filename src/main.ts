@@ -1,14 +1,8 @@
 /**
- * The goal for this exercise was to setup a basic input system
- * for a terminal based application. I wanted to get it setup so that
- * it could handle different kinds of input (chars, special keys, and mouse).
- * Additionally I wanted to see if I could integrate this with a basic UI which
- * would then do something with the input. This is all really just work towards
- * the final project for this class as handling input and how it interacts with
- * the UI is going to be the hardest part. For know you can run his program using
- * the command below:
+ * This is the primary entrypoint for the application. It initializes the
+ * window and input handler, along with cleaning up.
  *
- *  deno run src/main.ts
+ *  deno run main.ts
  *
  * @author Dan McCarthy
  */
@@ -19,7 +13,6 @@ import { Input } from "./input/InputTypes.ts";
 import View from "./views/View.ts";
 import Window from "./views/Window.ts";
 
-// Enable X10 mouse reporting (so we can see any mouse clicks)
 View.write(ANSI.mouseTracking.enable + ANSI.cursor.disable);
 
 try {
@@ -31,7 +24,7 @@ try {
 
   await input.run();
 } catch (error) {
-  // placeholder for now. Should expand on this more later
+  // placeholder for now. TODO: expand on this more later
   console.error(error);
 } finally {
   View.write(ANSI.mouseTracking.disable + ANSI.cursor.enable);

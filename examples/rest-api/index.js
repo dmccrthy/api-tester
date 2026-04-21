@@ -1,14 +1,14 @@
 /**
- * A example REST API written with Express.js. Provides endpoints 
+ * A example REST API written with Express.js. Provides endpoints
  * that accept GET, POST, PUT, etc. for testing the actually app.
  *
  * @author Dan McCarthy
  */
 
-import express from "express"
+import express from "express";
 
 const app = express();
-const PORT = 9000
+const PORT = 9000;
 
 // app.get("/api", (req, res) => {
 
@@ -19,5 +19,5 @@ const PORT = 9000
 // })
 
 app.listen(PORT, () => {
-    console.log(`Running on PORT=${PORT}`);
-})
+  console.log(`Running on PORT=${PORT}`);
+});

@@ -21,7 +21,6 @@ export default class InputHandler {
     // by default Deno.stdin.readable will wait for a \n
     Deno.stdin.setRaw(true);
 
-    // track last mouse press (used when handling mouse release)
     let currMouseInput: "left" | "right";
     const decoder = new TextDecoder();
 
@@ -50,12 +49,10 @@ export default class InputHandler {
             input.value = "backspace";
             break;
           default:
-            // update type, and actually decode text
             input.type = "char";
             input.value = decoder.decode(chunk);
         }
 
-        // exit when 'q' is pressed
         if (input.value === "q") return;
 
         this.callback(input);

@@ -19,9 +19,15 @@ const ANSI = {
     enable: "\x1b[?1000h",
     disable: "\x1b[?1000l",
   },
-
   clearScreen: "\x1b[2J",
   clearLine: "\x1b[2K",
+
+  // Text Styling
+  textGreen: "\x1b[1;32m",
+  textRed: "\x1b[1;31m",
+  textBlack: "\x1b[1:30m",
+  bgWhite: "\x1b[47m",
+  resetColor: "\x1b[0m",
 
   /**
    * Generates the escape sequence to move cursor to specific row

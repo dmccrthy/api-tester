@@ -1,30 +1,47 @@
 /**
+ * Window represents the display as a whole including all the elements
+ * inside of it. It handles passing input to elements along with initializing
+ * elements on the screen.
+ *
  * @author Dan McCarthy
  */
 
 import ANSI from "../ANSI.ts";
 import { Input } from "../input/InputTypes.ts";
-import LogView from "./LogView.ts";
+import initForm from "./Form.ts";
 import View from "./View.ts";
 
-export default class Window {
-  private views: View[];
+export default class Window extends View {
+  private selected: View | null;
 
   constructor() {
-    this.views = [];
+    const { columns, rows } = Deno.consoleSize();
+    super([0, 0], columns, rows);
+    this.selected = null;
 
-    const { rows, columns } = Deno.consoleSize();
     View.write(ANSI.clearScreen);
 
     // initialize elements
-    const log = new LogView([Math.floor(columns / 2) - 50, 2], 100, rows - 10);
-    this.views.push(log);
+    this.children = initForm(columns);
   }
 
+  public render(): void {}
+
   public handleInput(input: Input): void {
-    // all this does right now is pass input directly to logs
-    // in the future I'll need to implement logic to handle
-    // different inputs based on the element
-    this.views[0].render(input);
+    if (input.type === "mouse") {
+      let element = this.checkBounds([input.x, input.y]);
+
+      if (!element || element == this) {
+        this.selected = null;
+        return;
+      }
+
+      // when clicked set the element as selected
+      this.selected = element;
+      element.handleInput(input);
+    } else {
+      // for non-mouse input is passed to the current element
+      this.selected?.handleInput(input);
+    }
   }
 }
