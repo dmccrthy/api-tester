@@ -20,6 +20,6 @@ export type KeyInput = {
 
 // right know special keys are stored as this union
 // in the future I may expand it to include others like arrow keys
-export type SpecialKey = "enter" | "backspace" | "escape";
+export type SpecialKey = "enter" | "backspace" | "escape" | "CTRL+C";
 
 export type Input = KeyInput | MouseInput;

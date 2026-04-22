@@ -9,10 +9,68 @@
 
 import { Input, KeyInput, MouseInput } from "./InputTypes.ts";
 
-type Callback = (input: Input) => void;
+/**
+ * @param chunk
+ * @returns
+ */
+export function parseKey(chunk: Uint8Array): KeyInput {
+  const decoder = new TextDecoder();
+  const input: KeyInput = {
+    type: "special",
+    value: "",
+  };
+
+  // each case is a special char (like backspace).
+  // all others should be decoded in default
+  switch (chunk[0]) {
+    case 3:
+      input.value = "CTRL+C";
+      break;
+    case 13:
+      input.value = "enter";
+      break;
+    case 27:
+      input.value = "escape";
+      break;
+    case 127:
+      input.value = "backspace";
+      break;
+    default:
+      input.type = "char";
+      input.value = decoder.decode(chunk);
+  }
+
+  return input;
+}
+
+/**
+ * @param chunk
+ * @param currMouseInput
+ * @returns
+ */
+export function parseMouse(
+  chunk: Uint8Array,
+  currMouseInput: "left" | "right" | undefined,
+): MouseInput | ("left" | "right") {
+  const button = chunk[3] - 32;
+
+  // code 3=release (meaning they have finished pressing the button)
+  // if its not a release we want to wait to save the input until its released
+  if (button !== 3) {
+    currMouseInput = button === 0 ? "left" : "right";
+    return currMouseInput;
+  }
+
+  return {
+    type: "mouse",
+    x: chunk[4] - 32,
+    y: chunk[5] - 32,
+    button: currMouseInput ?? "left",
+  };
+}
 
 export default class InputHandler {
-  constructor(private callback: Callback) {
+  constructor(private callback: (input: Input) => void) {
     this.callback = callback;
   }
 
@@ -22,38 +80,17 @@ export default class InputHandler {
     Deno.stdin.setRaw(true);
 
     let currMouseInput: "left" | "right";
-    const decoder = new TextDecoder();
 
     for await (const chunk of Deno.stdin.readable) {
       // single char input is relatively easy to handle
       // we do have to look out for special chars like ESC and Backspace
       if (chunk.length === 1) {
-        const input: KeyInput = {
-          type: "special",
-          value: "",
-        };
+        const input = parseKey(chunk);
 
-        // each case is a special char (like backspace).
-        // all others should be decoded in default
-        switch (chunk[0]) {
-          case 3:
-            // exit program with CTRL + C
-            return;
-          case 13:
-            input.value = "enter";
-            break;
-          case 27:
-            // exit program with escape
-            return;
-          case 127:
-            input.value = "backspace";
-            break;
-          default:
-            input.type = "char";
-            input.value = decoder.decode(chunk);
-        }
-
-        if (input.value === "q") return;
+        if (
+          input.value === "escape" || input.value === "q" ||
+          input.value === "CTR+C"
+        ) return;
 
         this.callback(input);
         continue;
@@ -64,21 +101,12 @@ export default class InputHandler {
       // for encoding mouse input. Finding good documentation of this stuff is a pain, but some
       // info about its structure can be found here: https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
       if (chunk.length === 6) {
-        const button = chunk[3] - 32;
+        const input = parseMouse(chunk, currMouseInput!);
 
-        // code 3=release (meaning they have finished pressing the button)
-        // if its not a release we want to wait to save the input until its released
-        if (button !== 3) {
-          currMouseInput = button === 0 ? "left" : "right";
+        if (input === "left" || input === "right") {
+          currMouseInput = input;
           continue;
         }
-
-        const input: MouseInput = {
-          type: "mouse",
-          x: chunk[4] - 32,
-          y: chunk[5] - 32,
-          button: currMouseInput!,
-        };
 
         this.callback(input);
       }
