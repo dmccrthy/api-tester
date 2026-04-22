@@ -8,7 +8,7 @@
 
 import ANSI from "../ANSI.ts";
 import { Input } from "../input/InputTypes.ts";
-import initForm from "./Form.ts";
+import Form from "./interactive/Form.ts";
 import View from "./View.ts";
 
 export default class Window extends View {
@@ -22,7 +22,7 @@ export default class Window extends View {
     View.write(ANSI.clearScreen);
 
     // initialize elements
-    this.children = initForm(columns);
+    this.children.push(new Form(columns));
     this.render();
   }
 
