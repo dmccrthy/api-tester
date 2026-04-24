@@ -6,14 +6,16 @@
  * @author Dan McCarthy
  */
 
-import View from "../View.ts";
-import TextBox from "./TextBox.ts";
-import Button from "./Button.ts";
-import Label from "../Label.ts";
-import ANSI from "../../ANSI.ts";
+import View from "./View.ts";
+import TextBox from "./interactive/TextBox.ts";
+import Multiselect from "./interactive/Multiselect.ts";
+import Button from "./interactive/Button.ts";
+import Label from "./Label.ts";
+import ANSI from "../ANSI.ts";
 
 export default class Form extends View {
   private urlInput: TextBox;
+  private methodInput: Radio;
   private submitButton: Button;
   private statusLabel: Label;
 
@@ -26,33 +28,34 @@ export default class Form extends View {
       "URL Endpoint:",
     );
 
-    this.submitButton = new Button(
+    this.methodInput = new Multiselect(
       [Math.floor(columns / 2) - 50, 8],
+      "HTTP Method:",
+      ["GET", "POST", "PUT", "PATCH", "DELETE"]
+    );
+
+    this.submitButton = new Button(
+      [Math.floor(columns / 2) - 50, 14],
       "Submit",
       () => this.submit(),
     );
 
     this.statusLabel = new Label(
-      [Math.floor(columns / 2) - 38, 9],
+      [Math.floor(columns / 2) - 38, 15],
       "",
     );
 
     this.children = [
       this.urlInput,
+      this.methodInput,
       this.submitButton,
       this.statusLabel,
     ];
   }
 
-  public render(): void {
-    for (const element of this.children) {
-      element.render();
-    }
-  }
-
-  public handleInput(input: Input): void {}
-
-  /** */
+  /** 
+   * Handles submitting the form
+   */
   private submit(): void {
     const url: string = this.urlInput.content;
 
@@ -62,7 +65,7 @@ export default class Form extends View {
       /^(http(s):\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/;
 
     if (!urlRegex.test(url)) {
-      this.statusLabel.label = ANSI.textRed + "FAIL" + ANSI.resetColor;
+      this.statusLabel.label = ANSI.textRed + this.methodInput.selected + ANSI.resetColor;
       return;
     }
 

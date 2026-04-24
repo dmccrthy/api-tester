@@ -8,7 +8,7 @@
 
 import ANSI from "../ANSI.ts";
 import { Input } from "../input/InputTypes.ts";
-import Form from "./interactive/Form.ts";
+import Form from "./Form.ts";
 import View from "./View.ts";
 
 export default class Window extends View {
@@ -26,16 +26,7 @@ export default class Window extends View {
     this.render();
   }
 
-  /**
-   * Window will try to rerender all elements in the application.
-   */
-  public render(): void {
-    for (const element of this.children) {
-      element.render();
-    }
-  }
-
-  public handleInput(input: Input): void {
+  public override handleInput(input: Input): void {
     if (input.type === "mouse") {
       const element = this.checkBounds([input.x, input.y]);
 

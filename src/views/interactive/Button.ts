@@ -18,7 +18,7 @@ export default class Button extends View {
     this.callback = callback;
   }
 
-  public render(): void {
+  public override render(): void {
     const [x, y] = this.corner;
     const border = "-".repeat(this.width);
 
@@ -30,7 +30,7 @@ export default class Button extends View {
     );
   }
 
-  public handleInput(input: Input): void {
+  public override handleInput(input: Input): void {
     if (input.type === "mouse") {
       this.callback();
     }

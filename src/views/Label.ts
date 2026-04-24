@@ -15,11 +15,9 @@ export default class Label extends View {
     this.label = label;
   }
 
-  public render(): void {
+  public override render(): void {
     View.write(
       ANSI.updateCursor(this.corner) + this.label,
     );
   }
-
-  public handleInput(): void {}
 }

@@ -24,11 +24,16 @@ export default abstract class View {
   }
 
   // trigger a rerender of a specific UI element
-  public abstract render(): void;
+  // individual elements can overide as needed
+  public render(): void {
+    for (const element of this.children) {
+      element.render();
+    }
+  }
 
   // handle input on a specific element
   // Window will pass input events to current ui element
-  public abstract handleInput(input: Input): void;
+  public handleInput(input: Input): void {}
 
   /**
    * CheckBounds uses corner/width/height to determine if a coordinate
@@ -40,16 +45,16 @@ export default abstract class View {
    */
   public checkBounds(coords: [number, number]): View | null {
     const withinX = (coords[0] >= this.corner[0]) &&
-      (coords[0] <= this.corner[0] + this.width);
+      (coords[0] < this.corner[0] + this.width);
 
     const withinY = (coords[1] >= this.corner[1]) &&
-      (coords[1] <= this.corner[1] + this.height);
+      (coords[1] < this.corner[1] + this.height);
 
     if (!(withinX && withinY)) {
       return null;
     }
 
-    // if its within the bounds of a child element return that
+    // if its within the bounds of a child element return the child
     for (const element of this.children) {
       const result = element.checkBounds(coords);
 
