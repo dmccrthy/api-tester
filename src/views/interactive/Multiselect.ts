@@ -34,13 +34,15 @@ export default class Multiselect extends View {
       const border = "-".repeat(length);
 
       // used to highlight the selected box in the multiselect
-      const highlight = option === this.selected ? ANSI.textBlack + ANSI.bgWhite : "";
-      const disableHighlight = option === this.selected ?  ANSI.resetColor : "";
+      const highlight = option === this.selected
+        ? ANSI.textBlack + ANSI.bgWhite
+        : "";
+      const disableHighlight = option === this.selected ? ANSI.resetColor : "";
 
       View.write(
         ANSI.updateCursor([x, y + 1]) + highlight + border +
-        ANSI.updateCursor([x, y + 2]) + `| ${option} |` + 
-        ANSI.updateCursor([x, y + 3]) + border + disableHighlight,
+          ANSI.updateCursor([x, y + 2]) + `| ${option} |` +
+          ANSI.updateCursor([x, y + 3]) + border + disableHighlight,
       );
 
       x += length;

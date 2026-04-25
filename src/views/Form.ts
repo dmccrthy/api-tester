@@ -31,7 +31,7 @@ export default class Form extends View {
     this.methodInput = new Multiselect(
       [Math.floor(columns / 2) - 50, 8],
       "HTTP Method:",
-      ["GET", "POST", "PUT", "PATCH", "DELETE"]
+      ["GET", "POST", "PUT", "PATCH", "DELETE"],
     );
 
     this.submitButton = new Button(
@@ -53,23 +53,32 @@ export default class Form extends View {
     ];
   }
 
-  /** 
+  /**
    * Handles submitting the form
    */
   private submit(): void {
     const url: string = this.urlInput.content;
 
-    // this regex pattern is based on this article from geeks for geeks (URLs are very complicated)
-    // https://www.geeksforgeeks.org/dsa/check-if-an-url-is-valid-or-not-using-regular-expression/
-    const urlRegex =
-      /^(http(s):\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/;
-
-    if (!urlRegex.test(url)) {
-      this.statusLabel.label = ANSI.textRed + this.methodInput.selected + ANSI.resetColor;
+    if (!Form.validateURL(url)) {
+      this.statusLabel.label = ANSI.textRed + this.methodInput.selected +
+        ANSI.resetColor;
       return;
     }
 
     // in the future we''l run the ApiRunner and get a result.
     this.statusLabel.label = ANSI.textGreen + "PASS" + ANSI.resetColor;
+  }
+
+  /**
+   * Check if a url is properly formatted. Public to test URL handling.
+   *
+   * @param {string} url address to validate
+   * @returns {boolean} True/false if the url is valid
+   */
+  public static validateURL(url: string): boolean {
+    // this regex pattern is based on this article from geeks for geeks (URLs are very complicated)
+    // https://www.geeksforgeeks.org/dsa/check-if-an-url-is-valid-or-not-using-regular-expression/
+    return /^(http(s):\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/
+      .test(url);
   }
 }
