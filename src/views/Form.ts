@@ -15,7 +15,7 @@ import ANSI from "../ANSI.ts";
 
 export default class Form extends View {
   private urlInput: TextBox;
-  private methodInput: Radio;
+  private methodInput: Multiselect;
   private submitButton: Button;
   private statusLabel: Label;
 

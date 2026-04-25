@@ -2,18 +2,9 @@
  * @author Dan McCarthy
  */
 
-type apiData = {
-  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-  url: string;
-  headers: {
-    [key: string]: string;
-  };
-  body: string;
-};
-
-/** 
+/**
  * dd
  */
 export default function apiHandler() {
-    const response = fetch()
+  const response = fetch();
 }

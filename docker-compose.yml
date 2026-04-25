@@ -1,0 +1,20 @@
+services:
+  mysql:
+    image: mysql
+    container_name: api_tester
+    restart: always
+    ports:
+      - "${MYSQL_PORT}:3306"
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./docs:/docker-entrypoint-initdb.d
+
+volumes:
+  mysql_data:
