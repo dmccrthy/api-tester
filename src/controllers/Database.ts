@@ -6,27 +6,34 @@
  */
 
 import { Client } from "mysql";
-
+import { load } from "@std/dotenv";
 export default class Database {
   private static client: Client | null = null;
 
-  public static async initDatabase() {
-    const client = await Database.getInstance();
-
-    client.execute(";");
-  }
-
   public static async getInstance(): Promise<Client> {
     if (!Database.client) {
-      //
+      const env = await load();
+
+      // create db connection using settings from the .env file
       Database.client = await new Client().connect({
-        hostname: "127.0.0.1",
-        username: "root",
-        db: "dbname",
-        password: "password",
+        hostname: env.MYSQL_ADDRESS,
+        port: Number(env.MYSQL_PORT),
+        username: env.MYSQL_USER,
+        password: env.MYSQL_PASSWORD,
+        db: env.MYSQL_DATABASE,
       });
     }
 
     return Database.client;
+  }
+
+  /**
+   * Handle closing any connections when program ends
+   */
+  public static async close(): Promise<void> {
+    if (Database.client) {
+      await Database.client.close();
+      Database.client = null;
+    }
   }
 }

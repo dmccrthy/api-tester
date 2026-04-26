@@ -5,7 +5,7 @@
  */
 
 export type Endpoint = {
-  id: string;
+  id: number;
   name: string;
   config: EndpointConfig;
   results: Result[];
@@ -21,6 +21,6 @@ export type EndpointConfig = {
 };
 
 export type Result = {
-  id: string;
+  id: number;
   content: unknown;
 };

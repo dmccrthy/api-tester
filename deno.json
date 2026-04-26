@@ -5,6 +5,7 @@
   },
   "imports": {
     "@std/assert": "jsr:@std/assert@^1.0.19",
+    "@std/dotenv": "jsr:@std/dotenv",
     "mysql": "https://deno.land/x/mysql@v2.12.1/mod.ts"
   }
 }

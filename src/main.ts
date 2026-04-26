@@ -8,6 +8,7 @@
  */
 
 import ANSI from "./ANSI.ts";
+import Database from "./controllers/Database.ts";
 import inputHandler from "./input/InputHandler.ts";
 import { Input } from "./input/InputTypes.ts";
 import View from "./views/View.ts";
@@ -28,4 +29,5 @@ try {
   console.error(error);
 } finally {
   View.write(ANSI.mouseTracking.disable + ANSI.cursor.enable);
+  Database.close();
 }
