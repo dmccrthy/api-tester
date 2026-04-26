@@ -12,9 +12,11 @@ import Database from "../controllers/Database.ts";
 
 export default class EndpointModel {
   /**
-   * @returns
+   * Retrieve all endpoints from the database.
+   * 
+   * @returns {Endpoint[]} array of current endpoints
    */
-  public static async fetchEndpoints(): Promise<Endpoint[]> {
+  public static async getEndpoints(): Promise<Endpoint[]> {
     const db = await Database.getInstance();
     const endpoints: Endpoint[] = [];
 

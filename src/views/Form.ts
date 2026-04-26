@@ -12,15 +12,18 @@ import Multiselect from "./interactive/Multiselect.ts";
 import Button from "./interactive/Button.ts";
 import Label from "./Label.ts";
 import ANSI from "../ANSI.ts";
+import EndpointController from "../controllers/EndpointController.ts";
 
 export default class Form extends View {
   private urlInput: TextBox;
   private methodInput: Multiselect;
   private submitButton: Button;
   private statusLabel: Label;
+  private ec: EndpointController;
 
-  constructor(columns: number) {
+  constructor(columns: number, ec: EndpointController) {
     super([0, 0], columns, 20);
+    this.ec = ec;
 
     this.urlInput = new TextBox(
       [Math.floor(columns / 2) - 50, 2],

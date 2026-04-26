@@ -5,7 +5,7 @@
 import { Endpoint } from "../models/EndpointTypes.ts";
 import EndpointModel from "../models/EndpointModel.ts";
 
-export default class EndpointState {
+export default class EndpointController {
   public endpoints: Endpoint[];
   public selected: number;
 
@@ -24,7 +24,7 @@ export default class EndpointState {
   /**
    * a
    */
-  public async createEndpoint(): Promise<void> {
+  public createEndpoint(): Promise<void> {
     this.endpoints.push(
       {
         id: this.endpoints.length,
@@ -42,5 +42,9 @@ export default class EndpointState {
 
     // add new  endpoint to the db
     //
+  }
+
+  public async updateEndpoint(id: number): Promise<void> {
+
   }
 }

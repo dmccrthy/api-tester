@@ -5,8 +5,8 @@
 import Button from "./Button.ts";
 
 export default class SidebarTab extends Button {
-  constructor(corner: [number, number], label: string, callback: () => void) {
-    super(corner, label.length + 4, 3);
+  constructor(corner: [number, number], width: number, label: string, callback: () => void) {
+    super(corner, width, 4);
     this.label = label;
     this.callback = callback;
   }

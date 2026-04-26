@@ -9,6 +9,7 @@
 
 import ANSI from "./ANSI.ts";
 import Database from "./controllers/Database.ts";
+import EndpointController from "./controllers/EndpointController.ts";
 import inputHandler from "./input/InputHandler.ts";
 import { Input } from "./input/InputTypes.ts";
 import View from "./views/View.ts";

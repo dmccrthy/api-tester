@@ -9,8 +9,8 @@ import { Input } from "../../input/InputTypes.ts";
 import View from "../View.ts";
 
 export default class Button extends View {
-  private label: string;
-  private callback: () => void;
+  protected label: string;
+  protected callback: () => void;
 
   constructor(corner: [number, number], label: string, callback: () => void) {
     super(corner, label.length + 4, 3);

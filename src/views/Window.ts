@@ -7,12 +7,15 @@
  */
 
 import ANSI from "../ANSI.ts";
+import EndpointController from "../controllers/EndpointController.ts";
 import { Input } from "../input/InputTypes.ts";
 import Form from "./Form.ts";
+import Sidebar from "./Sidebar.ts";
 import View from "./View.ts";
 
 export default class Window extends View {
   private selected: View | null;
+  private ec: EndpointController = new EndpointController([]);
 
   constructor() {
     const { columns, rows } = Deno.consoleSize();
@@ -22,7 +25,8 @@ export default class Window extends View {
     View.write(ANSI.clearScreen);
 
     // initialize elements
-    this.children.push(new Form(columns));
+    this.children.push(new Form(columns, this.ec));
+    this.children.push(new Sidebar(columns, this.ec));
     this.render();
   }
 
