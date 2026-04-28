@@ -13,7 +13,7 @@ import Database from "../controllers/Database.ts";
 export default class EndpointModel {
   /**
    * Retrieve all endpoints from the database.
-   * 
+   *
    * @returns {Endpoint[]} array of current endpoints
    */
   public static async getEndpoints(): Promise<Endpoint[]> {

@@ -15,40 +15,52 @@ import ANSI from "../ANSI.ts";
 import EndpointController from "../controllers/EndpointController.ts";
 
 export default class Form extends View {
+  private ec: EndpointController;
+  private endpointName: TextBox;
   private urlInput: TextBox;
   private methodInput: Multiselect;
   private submitButton: Button;
   private statusLabel: Label;
-  private ec: EndpointController;
 
   constructor(columns: number, ec: EndpointController) {
     super([0, 0], columns, 20);
     this.ec = ec;
 
-    this.urlInput = new TextBox(
+    this.endpointName = new TextBox(
       [Math.floor(columns / 2) - 50, 2],
       100,
+      "Endpoint Name:",
+      () => this.ec.getEndpointName(),
+      (val) => this.ec.updateEndpointName(val),
+    );
+
+    this.urlInput = new TextBox(
+      [Math.floor(columns / 2) - 50, 8],
+      100,
       "URL Endpoint:",
+      () => this.ec.getEndpointURL(),
+      (val) => this.ec.updateEndpointURL(val),
     );
 
     this.methodInput = new Multiselect(
-      [Math.floor(columns / 2) - 50, 8],
+      [Math.floor(columns / 2) - 50, 14],
       "HTTP Method:",
       ["GET", "POST", "PUT", "PATCH", "DELETE"],
     );
 
     this.submitButton = new Button(
-      [Math.floor(columns / 2) - 50, 14],
+      [Math.floor(columns / 2) - 50, 20],
       "Submit",
       () => this.submit(),
     );
 
     this.statusLabel = new Label(
-      [Math.floor(columns / 2) - 38, 15],
+      [Math.floor(columns / 2) - 38, 21],
       "",
     );
 
     this.children = [
+      this.endpointName,
       this.urlInput,
       this.methodInput,
       this.submitButton,
@@ -60,7 +72,7 @@ export default class Form extends View {
    * Handles submitting the form
    */
   private submit(): void {
-    const url: string = this.urlInput.content;
+    const url: string = this.urlInput.value;
 
     if (!Form.validateURL(url)) {
       this.statusLabel.label = ANSI.textRed + this.methodInput.selected +

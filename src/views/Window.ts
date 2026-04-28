@@ -8,6 +8,7 @@
 
 import ANSI from "../ANSI.ts";
 import EndpointController from "../controllers/EndpointController.ts";
+import Logger from "../controllers/Logger.ts";
 import { Input } from "../input/InputTypes.ts";
 import Form from "./Form.ts";
 import Sidebar from "./Sidebar.ts";
@@ -25,8 +26,8 @@ export default class Window extends View {
     View.write(ANSI.clearScreen);
 
     // initialize elements
+    this.children.push(new Sidebar(rows, this.ec));
     this.children.push(new Form(columns, this.ec));
-    this.children.push(new Sidebar(columns, this.ec));
     this.render();
   }
 

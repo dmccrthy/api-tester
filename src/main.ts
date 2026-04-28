@@ -2,7 +2,7 @@
  * This is the primary entrypoint for the application. It initializes the
  * window and input handler, along with cleaning up.
  *
- *  deno run main.ts
+ *  deno run --allow-read --allow-write main.ts
  *
  * @author Dan McCarthy
  */

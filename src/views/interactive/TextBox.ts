@@ -1,5 +1,8 @@
 /**
- * UI element representing a TextBox on the screen.
+ * UI element representing a TextBox on the screen. Each text box stores a
+ * get/update function to update the state of something. For this app its
+ * just going to get/update the state store by one of the controllers in
+ * ./controllers.
  *
  * @author Dan McCarthy
  */
@@ -9,13 +12,21 @@ import { Input } from "../../input/InputTypes.ts";
 import View from "../View.ts";
 
 export default class TextBox extends View {
-  private header: string;
-  public content: string;
-
-  constructor(corner: [number, number], width: number, header: string) {
+  constructor(
+    corner: [number, number],
+    width: number,
+    private header: string,
+    private get: () => string,
+    private update: (value: string) => void,
+  ) {
     super(corner, width, 4);
     this.header = header;
-    this.content = "";
+    this.get = get;
+    this.update = update;
+  }
+
+  public get value(): string {
+    return this.get();
   }
 
   public override render(): void {
@@ -23,7 +34,7 @@ export default class TextBox extends View {
     const border = "-".repeat(this.width);
 
     // ensure content fits inside box (TODO: i should probably implement text wrapping)
-    const visibleContent = this.content.slice(0, this.width - 2).padEnd(
+    const visibleContent = this.value.slice(0, this.width - 2).padEnd(
       this.width - 2,
       " ",
     );
@@ -40,9 +51,9 @@ export default class TextBox extends View {
     if (input.type === "mouse") return;
 
     if (input.value === "backspace") {
-      this.content = this.content.slice(0, this.content.length - 1);
+      this.update(this.value.slice(0, this.value.length - 1));
     } else {
-      this.content += input.value;
+      this.update(this.value + input.value);
     }
   }
 }

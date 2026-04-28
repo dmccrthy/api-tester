@@ -7,6 +7,7 @@
  * @author Dan McCarthy
  */
 
+import Logger from "../controllers/Logger.ts";
 import { Input, KeyInput, MouseInput } from "./InputTypes.ts";
 
 /**
@@ -82,6 +83,8 @@ export default class InputHandler {
     let currMouseInput: "left" | "right";
 
     for await (const chunk of Deno.stdin.readable) {
+      Logger.write("INFO", chunk);
+
       // single char input is relatively easy to handle
       // we do have to look out for special chars like ESC and Backspace
       if (chunk.length === 1) {
@@ -89,7 +92,7 @@ export default class InputHandler {
 
         if (
           input.value === "escape" || input.value === "q" ||
-          input.value === "CTR+C"
+          input.value === "CTRL+C"
         ) return;
 
         this.callback(input);

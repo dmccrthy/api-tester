@@ -5,6 +5,7 @@
  * @author Dan McCarthy
  */
 
+import Logger from "../controllers/Logger.ts";
 import { Input } from "../input/InputTypes.ts";
 
 export default abstract class View {
@@ -33,7 +34,9 @@ export default abstract class View {
 
   // handle input on a specific element
   // Window will pass input events to current ui element
-  public handleInput(_input: Input): void {}
+  public handleInput(_input: Input): void {
+    Logger.write("ERROR", "THIS IS GETTING YOUR INPUT");
+  }
 
   /**
    * CheckBounds uses corner/width/height to determine if a coordinate
