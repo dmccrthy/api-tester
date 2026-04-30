@@ -8,7 +8,7 @@
  */
 
 import Logger from "../controllers/Logger.ts";
-import { Input, KeyInput, MouseInput } from "./InputTypes.ts";
+import { Input, KeyInput, MouseClick, MouseScroll } from "./InputTypes.ts";
 
 /**
  * @param chunk
@@ -51,8 +51,18 @@ export function parseKey(chunk: Uint8Array): KeyInput {
  */
 export function parseMouse(
   chunk: Uint8Array,
-  currMouseInput: "left" | "right" | undefined,
-): MouseInput | ("left" | "right") {
+  currMouseInput: "left" | "right" = "left",
+): MouseClick | MouseScroll | ("left" | "right") {
+  // handle scroll events
+  if (chunk[3] === 96 || chunk[3] === 97) {
+    return {
+      type: "scroll",
+      x: chunk[4] - 32,
+      y: chunk[5] - 32,
+      direction: chunk[3] === 96 ? "up" : "down",
+    }
+  }
+
   const button = chunk[3] - 32;
 
   // code 3=release (meaning they have finished pressing the button)
@@ -63,10 +73,10 @@ export function parseMouse(
   }
 
   return {
-    type: "mouse",
+    type: "click",
     x: chunk[4] - 32,
     y: chunk[5] - 32,
-    button: currMouseInput ?? "left",
+    button: currMouseInput,
   };
 }
 
@@ -80,10 +90,10 @@ export default class InputHandler {
     // by default Deno.stdin.readable will wait for a \n
     Deno.stdin.setRaw(true);
 
-    let currMouseInput: "left" | "right";
+    let currMouseInput: "left" | "right" = "left";
 
     for await (const chunk of Deno.stdin.readable) {
-      Logger.write("INFO", chunk);
+      Logger.write("DEBUG", chunk);
 
       // single char input is relatively easy to handle
       // we do have to look out for special chars like ESC and Backspace
@@ -91,7 +101,7 @@ export default class InputHandler {
         const input = parseKey(chunk);
 
         if (
-          input.value === "escape" || input.value === "q" ||
+          input.value === "escape" ||
           input.value === "CTRL+C"
         ) return;
 
@@ -104,7 +114,7 @@ export default class InputHandler {
       // for encoding mouse input. Finding good documentation of this stuff is a pain, but some
       // info about its structure can be found here: https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
       if (chunk.length === 6) {
-        const input = parseMouse(chunk, currMouseInput!);
+        const input = parseMouse(chunk, currMouseInput);
 
         if (input === "left" || input === "right") {
           currMouseInput = input;

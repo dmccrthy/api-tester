@@ -8,14 +8,16 @@
 import ANSI from "../ANSI.ts";
 import EndpointController from "../controllers/EndpointController.ts";
 import Logger from "../controllers/Logger.ts";
+import { Input } from "../input/InputTypes.ts";
 import Button from "./interactive/Button.ts";
 import View from "./View.ts";
 
 export default class Sidebar extends View {
   private ec: EndpointController;
+  private scrollOffset = 0;
 
   constructor(rows: number, ec: EndpointController) {
-    super([0, 0], 40, rows);
+    super([0, 0], 30, rows);
     this.ec = ec;
   }
 
@@ -24,6 +26,10 @@ export default class Sidebar extends View {
 
     // clear sidebar contents
     View.write(ANSI.clearScreen); // TODO: fix this
+
+    for (let i = 0; i < this.height; i++) {
+      View.write(ANSI.updateCursor([this.width, i]) + "|");
+    }
 
     for (const [index, endpoint] of this.ec.endpoints.entries()) {
       this.children.push(
@@ -35,7 +41,7 @@ export default class Sidebar extends View {
       );
       this.children.push(
         new Button(
-          [endpoint.name.length + 6, (index * 4) + 1],
+          [endpoint.name.length + 5, (index * 4) + 1],
           "X",
           this.removeButton(index),
         ),
@@ -53,6 +59,21 @@ export default class Sidebar extends View {
     );
 
     super.render();
+  }
+
+  public override handleInput(input: Input): void {
+    if (input.type === "scroll") {
+      Logger.write("DEBUG", this.scrollOffset)
+
+      if (input.direction === "down") {
+        this.scrollOffset = Math.max(0, this.scrollOffset - 1);
+      } else {
+        // Prevent scrolling past the end of the list
+        const maxOffset = Math.max(0, this.ec.endpoints.length - this.maxVisible);
+        this.scrollOffset = Math.min(maxOffset, this.scrollOffset + 1);
+      }
+      this.render();
+    }
   }
 
   /**

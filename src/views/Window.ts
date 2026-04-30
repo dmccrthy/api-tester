@@ -32,7 +32,9 @@ export default class Window extends View {
   }
 
   public override handleInput(input: Input): void {
-    if (input.type === "mouse") {
+    Logger.write("DEBUG", input);
+
+    if (input.type === "click") {
       const element = this.checkBounds([input.x, input.y]);
 
       if (!element || element == this) {

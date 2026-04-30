@@ -6,7 +6,7 @@
 
 import { assertEquals, assertExists } from "@std/assert";
 import { parseMouse } from "../../input/InputHandler.ts";
-import type { MouseInput } from "../../input/InputTypes.ts";
+import type { MouseClick, MouseScroll } from "../../input/InputTypes.ts";
 
 function createMouseChunk(
   button: number,
@@ -27,29 +27,29 @@ function createMouseChunk(
 
 Deno.test("parseMouse() left click returns button state", () => {
   const chunk = createMouseChunk(0, 10, 5);
-  const result = parseMouse(chunk, undefined);
+  const result = parseMouse(chunk);
 
   assertEquals(result, "left");
 });
 
 Deno.test("parseMouse() right click returns button state", () => {
   const chunk = createMouseChunk(1, 10, 5);
-  const result = parseMouse(chunk, undefined);
+  const result = parseMouse(chunk);
 
   assertEquals(result, "right");
 });
 
 Deno.test("parseMouse() MB3 is treated like left click", () => {
   const chunk = createMouseChunk(2, 10, 5);
-  const result = parseMouse(chunk, undefined);
+  const result = parseMouse(chunk);
 
   assertEquals(result, "right");
 });
 
-Deno.test("parseMouse() release event returns MouseInput", () => {
+Deno.test("parseMouse() release event returns MouseClick", () => {
   // need type assertion here sine type function returns different types
   const chunk = createMouseChunk(3, 15, 8);
-  const result = parseMouse(chunk, "left") as MouseInput;
+  const result = parseMouse(chunk, "left") as MouseClick;
 
   assertExists(result);
   assertEquals(result.type, "mouse");

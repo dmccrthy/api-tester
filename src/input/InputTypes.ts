@@ -6,12 +6,19 @@
  * @author Dan McCarthy
  */
 
-export type MouseInput = {
-  type: "mouse";
+export type MouseClick = {
+  type: "click";
   x: number;
   y: number;
   button: "left" | "right";
 };
+
+export type MouseScroll = {
+  type: "scroll";
+  x: number;
+  y: number;
+  direction: "up" | "down";
+}
 
 export type KeyInput = {
   type: "char" | "special";
@@ -22,4 +29,4 @@ export type KeyInput = {
 // in the future I may expand it to include others like arrow keys
 export type SpecialKey = "enter" | "backspace" | "escape" | "CTRL+C";
 
-export type Input = KeyInput | MouseInput;
+export type Input = KeyInput | MouseClick | MouseScroll;

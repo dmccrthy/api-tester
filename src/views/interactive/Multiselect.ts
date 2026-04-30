@@ -50,7 +50,7 @@ export default class Multiselect extends View {
   }
 
   public override handleInput(input: Input): void {
-    if (input.type !== "mouse") return;
+    if (input.type !== "click") return;
 
     let [x] = this.corner;
 

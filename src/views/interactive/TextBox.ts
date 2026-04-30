@@ -48,11 +48,11 @@ export default class TextBox extends View {
   }
 
   public override handleInput(input: Input): void {
-    if (input.type === "mouse") return;
+    if (input.type === "click" || input.type === "scroll") return;
 
     if (input.value === "backspace") {
       this.update(this.value.slice(0, this.value.length - 1));
-    } else {
+    } else if (input.type === "char") {
       this.update(this.value + input.value);
     }
   }

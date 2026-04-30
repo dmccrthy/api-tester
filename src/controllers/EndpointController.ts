@@ -30,11 +30,11 @@ export default class EndpointController {
   /**
    * a
    */
-  public createEndpoint(): void {
+  public createEndpoint(): Endpoint {
     this.endpoints.push(
       {
         id: this.endpoints.length,
-        name: `Endpoint ${this.endpoints.length}`,
+        name: `Endpoint ${this.endpoints.length + 1}`,
         config: {
           url: "",
           method: "GET",
@@ -48,6 +48,9 @@ export default class EndpointController {
 
     // add new  endpoint to the db
     //
+
+
+    return this.selected;
   }
 
   /**
@@ -70,7 +73,7 @@ export default class EndpointController {
    */
   public getEndpoint(): Endpoint {
     if (!this.selected) {
-      throw new Error("No endpoint selected.");
+      return this.createEndpoint();
     }
 
     return this.selected;
@@ -89,7 +92,8 @@ export default class EndpointController {
   }
 
   public async updateEndpointName(value: string): Promise<void> {
-    this.getEndpoint().name = value;
+    // endpoint names can't be greater than 20 chars long
+    this.getEndpoint().name = value.slice(0, 20);
 
     // update curr endpoint in db
     // this part should have some form of debouncing to prevent extra db updates

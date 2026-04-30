@@ -26,30 +26,33 @@ export default class Form extends View {
     super([0, 0], columns, 20);
     this.ec = ec;
 
+    const maxWidth = columns / 2;
+    const center = Math.floor(columns / 2) - Math.floor(maxWidth / 2);
+
     this.endpointName = new TextBox(
-      [Math.floor(columns / 2) - 50, 2],
-      100,
+      [center, 2],
+      maxWidth,
       "Endpoint Name:",
       () => this.ec.getEndpointName(),
       (val) => this.ec.updateEndpointName(val),
     );
 
     this.urlInput = new TextBox(
-      [Math.floor(columns / 2) - 50, 8],
-      100,
+      [center, 8],
+      maxWidth,
       "URL Endpoint:",
       () => this.ec.getEndpointURL(),
       (val) => this.ec.updateEndpointURL(val),
     );
 
     this.methodInput = new Multiselect(
-      [Math.floor(columns / 2) - 50, 14],
+      [center, 14],
       "HTTP Method:",
       ["GET", "POST", "PUT", "PATCH", "DELETE"],
     );
 
     this.submitButton = new Button(
-      [Math.floor(columns / 2) - 50, 20],
+      [center, 20],
       "Submit",
       () => this.submit(),
     );
@@ -69,7 +72,7 @@ export default class Form extends View {
   }
 
   public override render(): void {
-    if (this.ec.getEndpoint()) {
+    if (this.ec.selected) {
       super.render();
     }
   }
