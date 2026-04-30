@@ -16,14 +16,23 @@ import inputHandler from "./input/InputHandler.ts";
 import { Input } from "./input/InputTypes.ts";
 import View from "./views/core/View.ts";
 import Window from "./views/Window.ts";
+import EndpointModel from "./models/EndpointModel.ts";
 
 await load({ export: true }); // expose environement variables through Deno.env
 
+// check if running from file based on cli args
+//
+
+// run in interactive mode
 View.write(ANSI.mouseTracking.enable + ANSI.cursor.disable);
 
 try {
+  const endpoints = await EndpointModel.getEndpoints();
+  Logger.write("DEBUG", endpoints);
+  const ec = new EndpointController(endpoints);
+
   // input is passed from the InputHandler to the actual window which controls that app
-  const window = new Window();
+  const window = new Window(ec);
   const input = new inputHandler((input: Input) => {
     window.handleInput(input);
   });
@@ -37,4 +46,5 @@ try {
       ANSI.updateCursor([0, 0]),
   );
   Database.close();
+  Logger.write("INFO", "Closing database connections");
 }

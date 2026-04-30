@@ -7,12 +7,15 @@
 
 import { Client } from "mysql";
 import { load } from "@std/dotenv";
+import Logger from "./Logger.ts";
 export default class Database {
   private static client: Client | null = null;
 
   public static async getInstance(): Promise<Client> {
     if (!Database.client) {
       const env = await load();
+
+      Logger.write("DEBUG", env);
 
       // create db connection using settings from the .env file
       Database.client = await new Client().connect({

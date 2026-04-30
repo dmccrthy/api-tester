@@ -9,6 +9,7 @@
 
 import { Endpoint } from "./EndpointTypes.ts";
 import Database from "../controllers/Database.ts";
+import Logger from "../controllers/Logger.ts";
 
 export default class EndpointModel {
   /**
@@ -18,12 +19,120 @@ export default class EndpointModel {
    */
   public static async getEndpoints(): Promise<Endpoint[]> {
     const db = await Database.getInstance();
-    const endpoints: Endpoint[] = [];
+    let results: Endpoint[] = [];
 
-    const results = await db.query("SELECT * FROM Endpoints;");
+    // need a join here to combine data from the 2 tables
+    try {
+      results = await db.query(`
+        SELECT e.id, e.name, e.result, c.id as config_id, c.url, c.method, c.body 
+        FROM Endpoints e
+        LEFT JOIN Configurations c ON e.id = c.endpoint_id
+      `);
+    } catch (error) {
+      Logger.write("ERROR", "getEndpoints() failed - " + error.message);
+      return results;
+    }
 
-    console.log(results);
+    // map to array of endpoints (and remove any null values)
+    return results.map((row) => ({
+      id: row.id,
+      name: row.name ?? "",
+      result: row.result ?? "",
+      config: {
+        id: row.config_id,
+        url: row.url ?? "",
+        method: row.method ?? "GET",
+        body: row.body ?? "",
+      },
+    }));
+  }
 
-    return endpoints;
+  public static async createEndpoint(endpoint: Endpoint): Promise<void> {
+    const db = await Database.getInstance();
+
+    // need 2 insertions since theres 2 tables
+    try {
+      Logger.write(
+        "INFO",
+        await db.execute(
+          "INSERT INTO Endpoints (id, name, result) VALUES (?, ?, ?);",
+          [endpoint.id, endpoint.name, endpoint.result],
+        ),
+      );
+
+      Logger.write(
+        "INFO",
+        await db.execute(
+          "INSERT INTO Configurations (id, endpoint_id, url, method, body) VALUES (?, ?, ?, ?, ?);",
+          [
+            endpoint.config.id,
+            endpoint.id,
+            endpoint.config.url,
+            endpoint.config.method,
+            endpoint.config.body,
+          ],
+        ),
+      );
+    } catch (error) {
+      Logger.write("ERROR", `Failed to insert endpoint - ${error.message}`);
+      return;
+    }
+  }
+
+  public static async updateEndpoint(endpoint: Endpoint): Promise<void> {
+    const db = await Database.getInstance();
+
+    // similiar to create just need to use update
+    try {
+      Logger.write(
+        "INFO",
+        await db.execute(
+          "UPDATE Endpoints SET name = ?, result = ? WHERE id = ?;",
+          [endpoint.name, endpoint.result, endpoint.id],
+        ),
+      );
+
+      Logger.write(
+        "INFO",
+        await db.execute(
+          "UPDATE Configurations SET url = ?, method = ?, body = ? WHERE id = ?;",
+          [
+            endpoint.config.url,
+            endpoint.config.method,
+            endpoint.config.body,
+            endpoint.config.id,
+          ],
+        ),
+      );
+    } catch (error) {
+      Logger.write("ERROR", `Failed to update endpoint - ${error.message}`);
+      return;
+    }
+  }
+
+  public static async deleteEndpoint(id: number): Promise<void> {
+    const db = await Database.getInstance();
+
+    // delete records from both tables based on the provided id
+    try {
+      Logger.write(
+        "INFO",
+        await db.execute(
+          "DELETE FROM Endpoints WHERE id = ?;",
+          [id],
+        ),
+      );
+
+      Logger.write(
+        "INFO",
+        await db.execute(
+          "DELETE FROM Configurations WHERE endpoint_id = ?;",
+          [id],
+        ),
+      );
+    } catch (error) {
+      Logger.write("ERROR", `Failed to delete endpoint - ${error.message}`);
+      return;
+    }
   }
 }

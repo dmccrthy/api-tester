@@ -12,10 +12,8 @@ export type Endpoint = {
 };
 
 export type EndpointConfig = {
+  id: number;
   url: string;
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-  headers: {
-    [key: string]: string;
-  };
   body: string;
 };

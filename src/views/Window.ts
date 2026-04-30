@@ -17,12 +17,12 @@ import View from "./core/View.ts";
 
 export default class Window extends View {
   private selected: View | null;
-  private ec: EndpointController = new EndpointController([]);
 
-  constructor() {
+  constructor(private ec: EndpointController) {
     const { columns, rows } = Deno.consoleSize();
     super([0, 0], columns, rows);
     this.selected = null;
+    this.ec = ec;
 
     View.write(ANSI.clearScreen);
 
