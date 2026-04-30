@@ -5,10 +5,28 @@
  * @author Dan McCarthy
  */
 
+export type LOG_LEVEL = "DEBUG" | "INFO" | "ERROR";
+
+const LOG_PRIORITY = {
+  DEBUG: 0,
+  INFO: 1,
+  ERROR: 2,
+};
+
 export default class Logger {
-  public static write(level: "DEBUG" | "INFO" | "ERROR", message: string) {
-    Deno.writeTextFileSync("api_tester.log", `[${level}] ${message}\n`, {
-      append: true,
-    });
+  private static file: string = Deno.env.get("LOG_FILE") ?? "api_tester.log";
+  private static level: LOG_LEVEL = Deno.env.get("LOG_LEVEL") ?? "INFO";
+
+  public static write(level: LOG_LEVEL, message: string) {
+    // log messages won't be logged if below the current logging level
+    if (LOG_PRIORITY[level] >= LOG_PRIORITY[this.level]) {
+      Deno.writeTextFileSync(
+        this.file,
+        `${new Date().toISOString()} [${level}] ${message}\n`,
+        {
+          append: true,
+        },
+      );
+    }
   }
 }

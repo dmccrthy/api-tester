@@ -60,7 +60,7 @@ export default class Sidebar extends View {
    */
   private selectButton(index: number): () => void {
     return () => {
-      this.ec.selected = index;
+      this.ec.selected = this.ec.endpoints[index];
     };
   }
 

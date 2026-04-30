@@ -68,6 +68,12 @@ export default class Form extends View {
     ];
   }
 
+  public override render(): void {
+    if (this.ec.getEndpoint()) {
+      super.render();
+    }
+  }
+
   /**
    * Handles submitting the form
    */

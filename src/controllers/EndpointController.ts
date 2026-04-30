@@ -3,7 +3,7 @@
  * are stored as objects and updated through methods exposed by this class.
  * The ec also calls the endpoint model to update the database when state is
  * changed.
- * 
+ *
  * @author Dan McCarthy
  */
 
@@ -13,7 +13,7 @@ import Logger from "./Logger.ts";
 
 export default class EndpointController {
   public endpoints: Endpoint[];
-  public selected: number;
+  public selected: Endpoint | null;
 
   constructor(endpoints: Endpoint[]) {
     this.endpoints = endpoints;
@@ -24,7 +24,7 @@ export default class EndpointController {
     }
 
     // either way the selected endpoint is just the first one in the list
-    this.selected = 0;
+    this.selected = this.endpoints[0];
   }
 
   /**
@@ -44,20 +44,20 @@ export default class EndpointController {
         results: [],
       },
     );
-    this.selected = this.endpoints.length - 1;
+    this.selected = this.endpoints[this.endpoints.length - 1];
 
     // add new  endpoint to the db
     //
   }
 
   /**
-   * 
-   * @param index 
+   * @param index
    */
   public deleteEndpoint(index: number): void {
     Logger.write("DEBUG", `Deleting index ${index}`);
     Logger.write("DEBUG", `Current array ${this.endpoints}`);
     this.endpoints.splice(index, 1);
+    this.selected = this.endpoints[Math.max(index - 1, 0)];
 
     // update db with changes
     //
@@ -65,11 +65,15 @@ export default class EndpointController {
 
   /**
    * Get the currently stored endpoint
-   * 
+   *
    * @returns {Endpoint} currently selected endpoint
    */
   public getEndpoint(): Endpoint {
-    return this.endpoints[this.selected];
+    if (!this.selected) {
+      throw new Error("No endpoint selected.");
+    }
+
+    return this.selected;
   }
 
   public getEndpointName(): string {
