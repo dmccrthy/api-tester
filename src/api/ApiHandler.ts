@@ -22,7 +22,7 @@ export default async function apiHandler(ec: EndpointController): APIResponse {
       method: config.method,
       headers: config.headers,
 
-      // Only include body if the method isn't GET or HEAD
+      // Only include body if the method isn't GET
       body: config.method !== "GET" ? config.body : undefined,
     }).then((response) => response.text());
 
@@ -32,6 +32,7 @@ export default async function apiHandler(ec: EndpointController): APIResponse {
   } catch (error) {
     // avoid throwing and error
     // should display message on form
+    Logger.write("WARN", error);
     return {
       status: "FAILURE",
       message: error.message,

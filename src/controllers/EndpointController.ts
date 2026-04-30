@@ -101,7 +101,6 @@ export default class EndpointController {
   public getEndpointResult(): string {
     return this.getEndpoint().result;
   }
-  
 
   public async updateEndpointName(value: string): Promise<void> {
     // endpoint names can't be greater than 20 chars long

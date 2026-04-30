@@ -25,6 +25,7 @@ export default class Form extends View {
   private methodInput: Multiselect;
   private submitButton: Button;
   private statusLabel: Label;
+  private bodyInput: TextBox;
   private responseBox: TextOutput;
 
   constructor(columns: number, ec: EndpointController) {
@@ -37,44 +38,58 @@ export default class Form extends View {
     this.endpointName = new TextBox(
       [center, 2],
       maxWidth,
-      "Endpoint Name:",
+      "Endpoint Name (max 20 chars)",
       () => this.ec.getEndpointName(),
       (val) => this.ec.updateEndpointName(val),
     );
 
     this.urlInput = new TextBox(
-      [center, 8],
+      [center, 7],
       maxWidth,
-      "URL Endpoint:",
+      "URL",
       () => this.ec.getEndpointURL(),
       (val) => this.ec.updateEndpointURL(val),
     );
 
     this.methodInput = new Multiselect(
-      [center, 14],
-      "HTTP Method:",
+      [center, 12],
+      "HTTP Method",
       ["GET", "POST", "PUT", "PATCH", "DELETE"],
       () => this.ec.getEndpointMethod(),
       (val) => this.ec.updateEndpointMethod(val),
     );
 
+    this.bodyInput = new TextBox(
+      [center, 17],
+      maxWidth,
+      "Request Body",
+      () => this.ec.getEndpointBody(),
+      (val) => this.ec.updateEndpointBody(val),
+    );
+
     this.submitButton = new Button(
-      [center, 20],
+      [center, 22],
       "Submit",
       () => this.submit(),
     );
 
     this.statusLabel = new Label(
-      [Math.floor(columns / 2) - 30, 21],
+      [Math.floor(columns / 2) - 25, 23],
       "",
     );
 
-    this.responseBox = new TextOutput([center, 26], maxWidth, "Response", () => this.ec.getEndpointResult())
+    this.responseBox = new TextOutput(
+      [center, 26],
+      maxWidth,
+      "Response",
+      () => this.ec.getEndpointResult(),
+    );
 
     this.children = [
       this.endpointName,
       this.urlInput,
       this.methodInput,
+      this.bodyInput,
       this.submitButton,
       this.statusLabel,
       this.responseBox,
@@ -90,7 +105,7 @@ export default class Form extends View {
   /**
    * Handles submitting the form
    */
-  private submit(): void {
+  private async submit(): Promise<void> {
     Logger.write("INFO", "Submiting form.");
 
     const endpoint: Endpoint = this.ec.getEndpoint();
@@ -99,25 +114,31 @@ export default class Form extends View {
     if (!/^[ a-zA-Z0-9]+$/.test(endpoint.name)) {
       this.statusLabel.label = ANSI.textRed + "Invalid Endpoint Name" +
         ANSI.resetColor;
-      this.render()
+      this.render();
       return;
     }
 
     if (!Form.validateURL(endpoint.config.url)) {
       this.statusLabel.label = ANSI.textRed + "Invalid URL" +
         ANSI.resetColor;
-      this.render()
+      this.render();
       return;
     }
-    // if method is valid
+
+    if (!/(GET|POST|PUT|PATCH|DELETE)/.test(endpoint.config.method)) {
+      this.statusLabel.label = ANSI.textRed + "Invalid HTTP Method" +
+        ANSI.resetColor;
+      this.render();
+      return;
+    }
 
     // if body is valid json
 
-    // have apiHandl;er make request
-    const status = apiHandler(this.ec);
-    Logger.write("DEBUG", status)
+    // have apiHandler make request
+    const status = await apiHandler(this.ec);
+    Logger.write("DEBUG", status);
 
-    this.statusLabel.label = ANSI.textGreen + status.message + ANSI.resetColor;
+    this.statusLabel.label = ANSI.textGreen + status.status + ANSI.resetColor;
     this.render();
   }
 
@@ -130,7 +151,7 @@ export default class Form extends View {
   public static validateURL(url: string): boolean {
     // this regex pattern is based on this article from geeks for geeks (URLs are very complicated)
     // https://www.geeksforgeeks.org/dsa/check-if-an-url-is-valid-or-not-using-regular-expression/
-    return /^(http(s):\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/
+    return /^(http(s)?:\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/
       .test(url);
   }
 }

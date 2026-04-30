@@ -3,11 +3,13 @@
 To run the program interactively you can use the following command:
 
 ```shell
-deno run --allow-read --allow-write --allow-en ./src/main.ts
+deno run --allow-read --allow-write --allow-env --allow-net ./main.ts
 ```
 
 To run the program directly from the CLI you can use this command with arguements:
 
 ```shell
-deno run 
+deno run --allow-read --allow-write --allow-env --allow-net ./main.ts --file <file-path>
 ```
+
+For a file to use for the CLI arguement you can look at the sample inputs in the Project pdf.
