@@ -18,7 +18,7 @@ export type MouseScroll = {
   x: number;
   y: number;
   direction: "up" | "down";
-}
+};
 
 export type KeyInput = {
   type: "char" | "special";

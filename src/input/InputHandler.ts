@@ -60,7 +60,7 @@ export function parseMouse(
       x: chunk[4] - 32,
       y: chunk[5] - 32,
       direction: chunk[3] === 96 ? "up" : "down",
-    }
+    };
   }
 
   const button = chunk[3] - 32;

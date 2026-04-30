@@ -17,7 +17,7 @@ import { Input } from "./input/InputTypes.ts";
 import View from "./views/View.ts";
 import Window from "./views/Window.ts";
 
-await load({ export: true });
+await load({ export: true }); // expose environement variables through Deno.env
 
 View.write(ANSI.mouseTracking.enable + ANSI.cursor.disable);
 

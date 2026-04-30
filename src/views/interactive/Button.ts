@@ -18,9 +18,8 @@ export default class Button extends View {
     this.callback = callback;
   }
 
-  public override render(offset: number = 0): void {
+  public override render(): void {
     let [x, y] = this.corner;
-    y += offset;
     const border = "-".repeat(this.width);
 
     View.write(

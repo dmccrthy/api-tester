@@ -49,6 +49,8 @@ export default class Form extends View {
       [center, 14],
       "HTTP Method:",
       ["GET", "POST", "PUT", "PATCH", "DELETE"],
+      () => this.ec.getEndpointMethod(),
+      (val) => this.ec.updateEndpointMethod(val),
     );
 
     this.submitButton = new Button(

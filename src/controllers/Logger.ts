@@ -26,7 +26,9 @@ export default class Logger {
     // log messages won't be logged if below the current logging level
     if (LOG_PRIORITY[level] >= LOG_PRIORITY[this.level]) {
       // try to convert objects to JSON string so we avoid it logging [object, Object]
-      const output = typeof message === "object" ? JSON.stringify(message) : String(message);
+      const output = typeof message === "object"
+        ? JSON.stringify(message)
+        : String(message);
 
       Deno.writeTextFileSync(
         this.file,

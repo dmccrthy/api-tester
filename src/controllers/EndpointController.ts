@@ -49,7 +49,6 @@ export default class EndpointController {
     // add new  endpoint to the db
     //
 
-
     return this.selected;
   }
 
@@ -91,6 +90,10 @@ export default class EndpointController {
     return this.getEndpointConfig().url;
   }
 
+  public getEndpointMethod(): string {
+    return this.getEndpointConfig().method;
+  }
+
   public async updateEndpointName(value: string): Promise<void> {
     // endpoint names can't be greater than 20 chars long
     this.getEndpoint().name = value.slice(0, 20);
@@ -102,5 +105,9 @@ export default class EndpointController {
 
   public async updateEndpointURL(value: string): Promise<void> {
     this.getEndpointConfig().url = value;
+  }
+
+  public async updateEndpointMethod(value: string): Promise<void> {
+    this.getEndpointConfig().method = value;
   }
 }

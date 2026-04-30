@@ -9,11 +9,13 @@ import { Input } from "../../input/InputTypes.ts";
 import View from "../View.ts";
 
 export default class Multiselect extends View {
-  private header: string;
-  private options: string[];
-  public selected: string;
-
-  constructor(corner: [number, number], header: string, options: string[]) {
+  constructor(
+    corner: [number, number],
+    private header: string,
+    private options: string[],
+    private get: () => string,
+    private update: (value: string) => void,
+  ) {
     // NOTE: width is calculated based on the length of option strings
     super(
       corner,
@@ -22,11 +24,13 @@ export default class Multiselect extends View {
     );
     this.header = header;
     this.options = options;
-    this.selected = options[0]; // first options is default selected
+    this.get = get;
+    this.update = update;
   }
 
   public override render(): void {
     let [x, y] = this.corner;
+    const selected = this.get();
 
     View.write(ANSI.updateCursor([x, y]) + this.header + "\n");
     for (const option of this.options) {
@@ -34,10 +38,10 @@ export default class Multiselect extends View {
       const border = "-".repeat(length);
 
       // used to highlight the selected box in the multiselect
-      const highlight = option === this.selected
+      const highlight = option === selected
         ? ANSI.textBlack + ANSI.bgWhite
         : "";
-      const disableHighlight = option === this.selected ? ANSI.resetColor : "";
+      const disableHighlight = option === selected ? ANSI.resetColor : "";
 
       View.write(
         ANSI.updateCursor([x, y + 1]) + highlight + border +
@@ -60,7 +64,7 @@ export default class Multiselect extends View {
       const length = option.length + 4;
 
       if (input.x >= x && input.x < x + length) {
-        this.selected = option;
+        this.update(option);
         return;
       }
 
