@@ -1,0 +1,13 @@
+# RUNME
+
+To run the program interactively you can use the following command:
+
+```shell
+deno run --allow-read --allow-write --allow-en ./src/main.ts
+```
+
+To run the program directly from the CLI you can use this command with arguements:
+
+```shell
+deno run 
+```

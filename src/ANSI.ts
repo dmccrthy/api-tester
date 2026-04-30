@@ -22,6 +22,7 @@ const ANSI = {
   clearScreen: "\x1b[2J",
   clearLine: "\x1b[2K",
   clearBehindCursor: "\x1b[1K",
+  clearAfterCursor: "\x1b[0K",
 
   // Text Styling
   textGreen: "\x1b[1;32m",

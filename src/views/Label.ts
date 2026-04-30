@@ -17,7 +17,7 @@ export default class Label extends View {
 
   public override render(): void {
     View.write(
-      ANSI.updateCursor(this.corner) + this.label,
+      ANSI.updateCursor(this.corner) + ANSI.clearAfterCursor + this.label,
     );
   }
 }

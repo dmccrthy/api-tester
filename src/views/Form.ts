@@ -14,6 +14,9 @@ import Label from "./Label.ts";
 import ANSI from "../ANSI.ts";
 import EndpointController from "../controllers/EndpointController.ts";
 import apiHandler from "../api/ApiHandler.ts";
+import TextOutput from "./TextOutput.ts";
+import { Endpoint } from "../models/EndpointTypes.ts";
+import Logger from "../controllers/Logger.ts";
 
 export default class Form extends View {
   private ec: EndpointController;
@@ -22,9 +25,10 @@ export default class Form extends View {
   private methodInput: Multiselect;
   private submitButton: Button;
   private statusLabel: Label;
+  private responseBox: TextOutput;
 
   constructor(columns: number, ec: EndpointController) {
-    super([0, 0], columns, 20);
+    super([0, 0], columns, 100);
     this.ec = ec;
 
     const maxWidth = columns / 2;
@@ -61,9 +65,11 @@ export default class Form extends View {
     );
 
     this.statusLabel = new Label(
-      [Math.floor(columns / 2) - 38, 21],
+      [Math.floor(columns / 2) - 30, 21],
       "",
     );
+
+    this.responseBox = new TextOutput([center, 26], maxWidth, "Response", () => this.ec.getEndpointResult())
 
     this.children = [
       this.endpointName,
@@ -71,6 +77,7 @@ export default class Form extends View {
       this.methodInput,
       this.submitButton,
       this.statusLabel,
+      this.responseBox,
     ];
   }
 
@@ -84,18 +91,34 @@ export default class Form extends View {
    * Handles submitting the form
    */
   private submit(): void {
-    const url: string = this.ec.getEndpointName();
+    Logger.write("INFO", "Submiting form.");
 
-    if (!Form.validateURL(url)) {
-      this.statusLabel.label = ANSI.textRed + "Invalid URL!" +
+    const endpoint: Endpoint = this.ec.getEndpoint();
+
+    // validate differen inputs before calling apiHandelr
+    if (!/^[ a-zA-Z0-9]+$/.test(endpoint.name)) {
+      this.statusLabel.label = ANSI.textRed + "Invalid Endpoint Name" +
         ANSI.resetColor;
+      this.render()
       return;
     }
 
-    //
+    if (!Form.validateURL(endpoint.config.url)) {
+      this.statusLabel.label = ANSI.textRed + "Invalid URL" +
+        ANSI.resetColor;
+      this.render()
+      return;
+    }
+    // if method is valid
 
-    // in the future we''l run the ApiRunner and get a result.
-    this.statusLabel.label = ANSI.textGreen + "PASS" + ANSI.resetColor;
+    // if body is valid json
+
+    // have apiHandl;er make request
+    const status = apiHandler(this.ec);
+    Logger.write("DEBUG", status)
+
+    this.statusLabel.label = ANSI.textGreen + status.message + ANSI.resetColor;
+    this.render();
   }
 
   /**

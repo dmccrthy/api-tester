@@ -41,7 +41,7 @@ export default class EndpointController {
           headers: {},
           body: "",
         },
-        results: [],
+        result: "",
       },
     );
     this.selected = this.endpoints[this.endpoints.length - 1];
@@ -94,6 +94,15 @@ export default class EndpointController {
     return this.getEndpointConfig().method;
   }
 
+  public getEndpointBody(): string {
+    return this.getEndpointConfig().body;
+  }
+
+  public getEndpointResult(): string {
+    return this.getEndpoint().result;
+  }
+  
+
   public async updateEndpointName(value: string): Promise<void> {
     // endpoint names can't be greater than 20 chars long
     this.getEndpoint().name = value.slice(0, 20);
@@ -109,5 +118,13 @@ export default class EndpointController {
 
   public async updateEndpointMethod(value: string): Promise<void> {
     this.getEndpointConfig().method = value;
+  }
+
+  public async updateEndpointBody(value: string): Promise<void> {
+    this.getEndpointConfig().body = value;
+  }
+
+  public async updateEndpointResult(value: string): Promise<void> {
+    this.getEndpoint().result = value;
   }
 }

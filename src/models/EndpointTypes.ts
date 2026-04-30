@@ -8,7 +8,7 @@ export type Endpoint = {
   id: number;
   name: string;
   config: EndpointConfig;
-  results: Result[];
+  result: string;
 };
 
 export type EndpointConfig = {
@@ -17,10 +17,5 @@ export type EndpointConfig = {
   headers: {
     [key: string]: string;
   };
-  body?: string;
-};
-
-export type Result = {
-  id: number;
-  content: unknown;
+  body: string;
 };

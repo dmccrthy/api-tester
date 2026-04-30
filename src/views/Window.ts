@@ -39,6 +39,8 @@ export default class Window extends View {
     if (input.type === "click" || input.type === "scroll") {
       const element = this.checkBounds([input.x, input.y]);
 
+      Logger.write("DEBUG", element);
+
       if (!element || element == this) {
         this.selected = null;
         return;
