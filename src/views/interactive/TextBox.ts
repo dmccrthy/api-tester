@@ -9,9 +9,10 @@
 
 import ANSI from "../../ANSI.ts";
 import { Input } from "../../input/InputTypes.ts";
-import View from "../View.ts";
+import Selectable from "../core/Selectable.ts";
+import View from "../core/View.ts";
 
-export default class TextBox extends View {
+export default class TextBox extends Selectable {
   constructor(
     corner: [number, number],
     width: number,
@@ -23,6 +24,7 @@ export default class TextBox extends View {
     this.header = header;
     this.get = get;
     this.update = update;
+    this.render();
   }
 
   public get value(): string {
@@ -34,10 +36,12 @@ export default class TextBox extends View {
     const border = "-".repeat(this.width);
 
     // ensure content fits inside box (TODO: i should probably implement text wrapping)
-    const visibleContent = this.value.slice(0, this.width - 2).padEnd(
-      this.width - 2,
-      " ",
-    );
+    const cursor = this.selected ? "|" : "";
+    const visibleContent = (this.value + cursor).slice(0, this.width - 2)
+      .padEnd(
+        this.width - 2,
+        " ",
+      );
 
     View.write(
       ANSI.updateCursor([x, y]) + this.header + "\n" +
@@ -48,12 +52,17 @@ export default class TextBox extends View {
   }
 
   public override handleInput(input: Input): void {
-    if (input.type === "click" || input.type === "scroll") return;
+    if (input.type === "click" || input.type === "scroll") {
+      this.render();
+      return;
+    }
 
     if (input.value === "backspace") {
       this.update(this.value.slice(0, this.value.length - 1));
     } else if (input.type === "char") {
       this.update(this.value + input.value);
     }
+
+    this.render();
   }
 }

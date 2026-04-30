@@ -10,26 +10,31 @@ import EndpointController from "../controllers/EndpointController.ts";
 import Logger from "../controllers/Logger.ts";
 import { Input } from "../input/InputTypes.ts";
 import Button from "./interactive/Button.ts";
-import View from "./View.ts";
+import View from "./core/View.ts";
+import Form from "./Form.ts";
 
 export default class Sidebar extends View {
   private ec: EndpointController;
   private scrollOffset: number = 0;
+  public form: Form;
 
-  constructor(rows: number, ec: EndpointController) {
+  constructor(rows: number, ec: EndpointController, form: Form) {
     super([0, 0], 30, rows);
     this.ec = ec;
+    this.form = form;
+
+    for (let i = 0; i < this.height; i++) {
+      View.write(ANSI.updateCursor([this.width, i]) + "|");
+    }
+
+    this.render();
   }
 
   public override render(): void {
     this.children = [];
 
     // clear sidebar contents
-    View.write(ANSI.clearScreen); // TODO: fix this
-
-    for (let i = 0; i < this.height; i++) {
-      View.write(ANSI.updateCursor([this.width, i]) + "|");
-    }
+    this.clearSidebar();
 
     for (const [index, endpoint] of this.ec.endpoints.entries()) {
       // based on the scroll offset we can check if the elemetn is on screen.
@@ -55,15 +60,16 @@ export default class Sidebar extends View {
       );
     }
 
-    const createButtonPosition = (this.ec.endpoints.length * 4) + 1 + this.scrollOffset;
-    if (createButtonPosition >= 0 && (createButtonPosition + 4) <= this.height) {
+    const createButtonPosition = (this.ec.endpoints.length * 4) + 1 +
+      this.scrollOffset;
+    if (
+      createButtonPosition >= 0 && (createButtonPosition + 4) <= this.height
+    ) {
       this.children.push(
         new Button(
           [1, createButtonPosition],
           "CREATE ENDPOINT",
-          () => {
-            this.ec.createEndpoint();
-          },
+          this.createButton(),
         ),
       );
     }
@@ -84,7 +90,28 @@ export default class Sidebar extends View {
       } else {
         this.scrollOffset = Math.min(0, this.scrollOffset + 1);
       }
+
+      this.render();
     }
+  }
+
+  private clearSidebar(): void {
+    for (let i = 0; i < this.height; i++) {
+      View.write(
+        ANSI.updateCursor([this.width - 1, i]) + ANSI.clearBehindCursor,
+      );
+    }
+  }
+
+  /**
+   * Create a function to select a button and trigger the form callback.
+   */
+  private createButton(): () => void {
+    return async () => {
+      await this.ec.createEndpoint();
+      this.render();
+      this.form.render();
+    };
   }
 
   /**
@@ -93,6 +120,7 @@ export default class Sidebar extends View {
   private selectButton(index: number): () => void {
     return () => {
       this.ec.selected = this.ec.endpoints[index];
+      this.form.render();
       Logger.write("DEBUG", this.ec.selected);
     };
   }
@@ -104,9 +132,10 @@ export default class Sidebar extends View {
    * @returns function to remove endpoint and reload sidebar
    */
   private removeButton(index: number): () => void {
-    return () => {
-      this.ec.deleteEndpoint(index);
+    return async () => {
+      await this.ec.deleteEndpoint(index);
       this.render();
+      this.form.render();
     };
   }
 }

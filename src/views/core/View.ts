@@ -5,14 +5,14 @@
  * @author Dan McCarthy
  */
 
-import Logger from "../controllers/Logger.ts";
-import { Input } from "../input/InputTypes.ts";
+import Logger from "../../controllers/Logger.ts";
+import { Input } from "../../input/InputTypes.ts";
 
 export default abstract class View {
   // corner represents (x, y) of top-left corner
   // width and height represent the number of rows/columns covered by the element
   //* NOTE: x=columns, while y=rows inside the terminal
-  protected corner: [number, number];
+  public corner: [number, number];
   protected width: number;
   protected height: number;
   protected children: View[];

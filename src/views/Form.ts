@@ -6,13 +6,14 @@
  * @author Dan McCarthy
  */
 
-import View from "./View.ts";
+import View from "./core/View.ts";
 import TextBox from "./interactive/TextBox.ts";
 import Multiselect from "./interactive/Multiselect.ts";
 import Button from "./interactive/Button.ts";
 import Label from "./Label.ts";
 import ANSI from "../ANSI.ts";
 import EndpointController from "../controllers/EndpointController.ts";
+import apiHandler from "../api/ApiHandler.ts";
 
 export default class Form extends View {
   private ec: EndpointController;
@@ -83,13 +84,15 @@ export default class Form extends View {
    * Handles submitting the form
    */
   private submit(): void {
-    const url: string = this.urlInput.value;
+    const url: string = this.ec.getEndpointName();
 
     if (!Form.validateURL(url)) {
-      this.statusLabel.label = ANSI.textRed + this.methodInput.selected +
+      this.statusLabel.label = ANSI.textRed + "Invalid URL!" +
         ANSI.resetColor;
       return;
     }
+
+    //
 
     // in the future we''l run the ApiRunner and get a result.
     this.statusLabel.label = ANSI.textGreen + "PASS" + ANSI.resetColor;

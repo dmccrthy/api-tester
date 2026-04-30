@@ -5,7 +5,7 @@
  */
 
 import { assertEquals } from "@std/assert";
-import View from "../../views/View.ts";
+import View from "../../views/core/View.ts";
 
 // placeholder element to test click detection
 class TestView extends View {

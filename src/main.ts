@@ -14,7 +14,7 @@ import EndpointController from "./controllers/EndpointController.ts";
 import Logger from "./controllers/Logger.ts";
 import inputHandler from "./input/InputHandler.ts";
 import { Input } from "./input/InputTypes.ts";
-import View from "./views/View.ts";
+import View from "./views/core/View.ts";
 import Window from "./views/Window.ts";
 
 await load({ export: true }); // expose environement variables through Deno.env

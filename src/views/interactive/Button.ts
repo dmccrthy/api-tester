@@ -6,16 +6,19 @@
 
 import ANSI from "../../ANSI.ts";
 import { Input } from "../../input/InputTypes.ts";
-import View from "../View.ts";
+import Selectable from "../core/Selectable.ts";
+import View from "../core/View.ts";
 
 export default class Button extends View {
   protected label: string;
   protected callback: () => void;
+  public highlighted: boolean = false;
 
   constructor(corner: [number, number], label: string, callback: () => void) {
     super(corner, label.length + 4, 3);
     this.label = label;
     this.callback = callback;
+    this.render();
   }
 
   public override render(): void {
@@ -34,5 +37,7 @@ export default class Button extends View {
     if (input.type === "click") {
       this.callback();
     }
+
+    this.render();
   }
 }

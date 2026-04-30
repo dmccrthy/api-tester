@@ -11,8 +11,9 @@ import EndpointController from "../controllers/EndpointController.ts";
 import Logger from "../controllers/Logger.ts";
 import { Input } from "../input/InputTypes.ts";
 import Form from "./Form.ts";
+import Selectable from "./core/Selectable.ts";
 import Sidebar from "./Sidebar.ts";
-import View from "./View.ts";
+import View from "./core/View.ts";
 
 export default class Window extends View {
   private selected: View | null;
@@ -25,16 +26,17 @@ export default class Window extends View {
 
     View.write(ANSI.clearScreen);
 
+    const sidebar = new Sidebar(rows, this.ec, new Form(columns, this.ec));
+
     // initialize elements
-    this.children.push(new Sidebar(rows, this.ec));
-    this.children.push(new Form(columns, this.ec));
-    this.render();
+    this.children.push(sidebar);
+    this.children.push(sidebar.form);
   }
 
   public override handleInput(input: Input): void {
     Logger.write("DEBUG", input);
 
-    if (input.type === "click") {
+    if (input.type === "click" || input.type === "scroll") {
       const element = this.checkBounds([input.x, input.y]);
 
       if (!element || element == this) {
@@ -42,15 +44,32 @@ export default class Window extends View {
         return;
       }
 
-      // when clicked set the element as selected
-      this.selected = element;
+      // when clicked set the element as selected (if selectable)
+      if (element instanceof Selectable) {
+        if (this.selected) {
+          this.selected.selected = false;
+          this.selected.render();
+        }
+
+        this.selected = element;
+        this.selected.selected = true;
+
+        Logger.write(
+          "INFO",
+          "Updating selected element - " + JSON.stringify(element),
+        );
+      } else {
+        if (this.selected) {
+          this.selected.selected = false;
+          this.selected.render();
+        }
+        this.selected = null;
+      }
+
       element.handleInput(input);
     } else {
       // for non-mouse input is passed to the current element
       this.selected?.handleInput(input);
     }
-
-    // rerender all elements in the application
-    this.render();
   }
 }

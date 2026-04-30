@@ -6,7 +6,7 @@
 
 import ANSI from "../../ANSI.ts";
 import { Input } from "../../input/InputTypes.ts";
-import View from "../View.ts";
+import View from "../core/View.ts";
 
 export default class Multiselect extends View {
   constructor(
@@ -26,6 +26,7 @@ export default class Multiselect extends View {
     this.options = options;
     this.get = get;
     this.update = update;
+    this.render();
   }
 
   public override render(): void {
@@ -65,10 +66,12 @@ export default class Multiselect extends View {
 
       if (input.x >= x && input.x < x + length) {
         this.update(option);
-        return;
+        break;
       }
 
       x += length;
     }
+
+    this.render();
   }
 }

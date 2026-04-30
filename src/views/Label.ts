@@ -5,7 +5,7 @@
  */
 
 import ANSI from "../ANSI.ts";
-import View from "./View.ts";
+import View from "./core/View.ts";
 
 export default class Label extends View {
   public label: string;
