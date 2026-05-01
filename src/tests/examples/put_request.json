@@ -1,0 +1,5 @@
+{
+  "url": "https://jsonplaceholder.typicode.com/posts/10",
+  "method": "PUT",
+  "body": {"id": 10, "title": "something", "body": "else", "userId": 99}
+}

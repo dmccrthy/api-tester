@@ -1,0 +1,5 @@
+{
+  "url": "https://jsonplaceholder.typicode.com/posts/12",
+  "method": "PATCH",
+  "body": {"title": "something"}
+}

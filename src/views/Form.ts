@@ -17,6 +17,7 @@ import apiHandler from "../api/ApiHandler.ts";
 import TextOutput from "./TextOutput.ts";
 import { Endpoint } from "../models/EndpointTypes.ts";
 import Logger from "../controllers/Logger.ts";
+import { config } from "node:process";
 
 export default class Form extends View {
   private ec: EndpointController;
@@ -125,20 +126,34 @@ export default class Form extends View {
       return;
     }
 
-    if (!/(GET|POST|PUT|PATCH|DELETE)/.test(endpoint.config.method)) {
+    if (!/^(GET|POST|PUT|PATCH|DELETE)$/.test(endpoint.config.method)) {
       this.statusLabel.label = ANSI.textRed + "Invalid HTTP Method" +
         ANSI.resetColor;
       this.render();
       return;
     }
 
-    // if body is valid json
+    // verify body is JSON object
+    // not meant to be perfectt by just trying
+    if (
+      endpoint.config.body.trim() !== "" &&
+      !/^{.*:.*}$/.test(endpoint.config.body)
+    ) {
+      this.statusLabel.label = ANSI.textRed + "Invalid Request Body" +
+        ANSI.resetColor;
+      this.render();
+      return;
+    }
 
     // have apiHandler make request
-    const status = await apiHandler(this.ec);
+    const status = await apiHandler(this.ec.getEndpointConfig(), this.ec);
     Logger.write("DEBUG", status);
 
-    this.statusLabel.label = ANSI.textGreen + status.status + ANSI.resetColor;
+    if (status.status === "SUCCESS") {
+      this.statusLabel.label = ANSI.textGreen + status.status + ANSI.resetColor;
+    } else {
+      this.statusLabel.label = ANSI.textRed + status.status + " - " + status.message + ANSI.resetColor;
+    }
     this.render();
   }
 

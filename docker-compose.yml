@@ -1,3 +1,4 @@
+# docker is present for testing the database (disregard this)
 services:
   mysql:
     image: mysql

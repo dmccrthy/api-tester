@@ -12,4 +12,4 @@ To run the program directly from the CLI you can use this command with arguement
 deno run --allow-read --allow-write --allow-env --allow-net ./main.ts --file <file-path>
 ```
 
-For a file to use for the CLI arguement you can look at the sample inputs in the Project pdf.
+For specific files to use for the CLI arguement you can look at the sample inputs in the Project pdf or look at ./src/test/examples.

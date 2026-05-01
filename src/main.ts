@@ -8,17 +8,30 @@
  */
 
 import { load } from "@std/dotenv";
+import { parseArgs } from "@std/cli/parse-args";
 import ANSI from "./ANSI.ts";
 import Database from "./controllers/Database.ts";
 import EndpointController from "./controllers/EndpointController.ts";
 import Logger from "./controllers/Logger.ts";
 import inputHandler from "./input/InputHandler.ts";
+import cliHandler from "./cli/CliHandler.ts";
 import { Input } from "./input/InputTypes.ts";
 import View from "./views/core/View.ts";
 import Window from "./views/Window.ts";
 import EndpointModel from "./models/EndpointModel.ts";
 
 await load({ export: true }); // expose environement variables through Deno.env
+
+const args = parseArgs(Deno.args, {
+  string: ["file"],
+  alias: { f: "file" },
+});
+
+// if file is specified run program using the CliHandler
+if (args.file) {
+  await cliHandler(args.file);
+  Deno.exit(0);
+}
 
 // check if running from file based on cli args
 //
