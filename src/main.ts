@@ -38,7 +38,7 @@ View.write(ANSI.mouseTracking.enable + ANSI.cursor.disable);
 
 try {
   const endpoints = await EndpointModel.getEndpoints();
-  Logger.write("DEBUG", endpoints);
+  Logger.write("DEBUG", "main.ts - ", endpoints);
   const ec = new EndpointController(endpoints);
 
   // input is passed from the InputHandler to the actual window which controls that app
@@ -49,12 +49,12 @@ try {
 
   await input.run();
 } catch (error) {
-  Logger.write("ERROR", error.message);
+  Logger.write("ERROR", "main.ts - ", error.message);
 } finally {
   View.write(
     ANSI.mouseTracking.disable + ANSI.cursor.enable + ANSI.clearScreen +
       ANSI.updateCursor([0, 0]),
   );
   Database.close();
-  Logger.write("INFO", "Closing database connections");
+  Logger.write("INFO", "Closed database connections and shutting down");
 }

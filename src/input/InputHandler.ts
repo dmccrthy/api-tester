@@ -93,7 +93,7 @@ export default class InputHandler {
     let currMouseInput: "left" | "right" = "left";
 
     for await (const chunk of Deno.stdin.readable) {
-      Logger.write("DEBUG", chunk);
+      Logger.write("DEBUG", "InputHandler.run() raw input received - ", chunk);
 
       // single char input is relatively easy to handle
       // we do have to look out for special chars like ESC and Backspace

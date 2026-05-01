@@ -34,12 +34,11 @@ export default class Window extends View {
   }
 
   public override handleInput(input: Input): void {
-    Logger.write("DEBUG", input);
+    Logger.write("DEBUG", "Window() received input - ", input);
 
     if (input.type === "click" || input.type === "scroll") {
       const element = this.checkBounds([input.x, input.y]);
-
-      Logger.write("DEBUG", element);
+      Logger.write("DEBUG", "Window() found element - ", element);
 
       if (!element || element == this) {
         this.selected = null;
@@ -55,11 +54,6 @@ export default class Window extends View {
 
         this.selected = element;
         this.selected.selected = true;
-
-        Logger.write(
-          "INFO",
-          "Updating selected element - " + JSON.stringify(element),
-        );
       } else {
         if (this.selected) {
           this.selected.selected = false;

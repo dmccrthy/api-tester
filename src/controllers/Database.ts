@@ -14,8 +14,7 @@ export default class Database {
   public static async getInstance(): Promise<Client> {
     if (!Database.client) {
       const env = await load();
-
-      Logger.write("DEBUG", env);
+      Logger.write("DEBUG", "Database.getInstance() loaded .env - ", env);
 
       // create db connection using settings from the .env file
       Database.client = await new Client().connect({
@@ -26,7 +25,7 @@ export default class Database {
         db: env.MYSQL_DATABASE,
         debug: false,
       });
-      Logger.write("DEBUG", "DB connection formed successfully");
+      Logger.write("INFO", "Database.getInstance() DB connection formed successfully");
     }
 
     return Database.client;

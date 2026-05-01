@@ -35,7 +35,7 @@ export default abstract class View {
   // handle input on a specific element
   // Window will pass input events to current ui element
   public handleInput(_input: Input): void {
-    Logger.write("WARN", "Input is being received by View.handleInput()");
+    Logger.write("WARN", "View.handleInput() received input");
   }
 
   /**

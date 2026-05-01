@@ -21,8 +21,6 @@ export default class EndpointModel {
     const db = await Database.getInstance();
     let results: Endpoint[] = [];
 
-    Logger.write("DEBUG", "HERRE")
-
     // need a join here to combine data from the 2 tables
     try {
       results = await db.query(`
@@ -31,7 +29,7 @@ export default class EndpointModel {
         LEFT JOIN Configurations c ON e.id = c.endpoint_id
       `);
     } catch (error) {
-      Logger.write("ERROR", "getEndpoints() failed - " + error.message);
+      Logger.write("WARN", "getEndpoints() failed - ", error);
       return results;
     }
 
@@ -56,6 +54,7 @@ export default class EndpointModel {
     try {
       Logger.write(
         "INFO",
+        "createEndpoint() insert into Endpoints table - ",
         await db.execute(
           "INSERT INTO Endpoints (id, name, result) VALUES (?, ?, ?);",
           [endpoint.id, endpoint.name, endpoint.result],
@@ -64,6 +63,7 @@ export default class EndpointModel {
 
       Logger.write(
         "INFO",
+        "createEndpoint() insert into Configurations table - ",
         await db.execute(
           "INSERT INTO Configurations (id, endpoint_id, url, method, body) VALUES (?, ?, ?, ?, ?);",
           [
@@ -76,7 +76,7 @@ export default class EndpointModel {
         ),
       );
     } catch (error) {
-      Logger.write("ERROR", `Failed to insert endpoint - ${error.message}`);
+      Logger.write("WARN", "createEndpoint() failed - ", error);
       return;
     }
   }
@@ -88,6 +88,7 @@ export default class EndpointModel {
     try {
       Logger.write(
         "INFO",
+        "updateEndpoint() update on Endpoints table - ",
         await db.execute(
           "UPDATE Endpoints SET name = ?, result = ? WHERE id = ?;",
           [endpoint.name, endpoint.result, endpoint.id],
@@ -96,6 +97,7 @@ export default class EndpointModel {
 
       Logger.write(
         "INFO",
+        "updateEndpoint() update on Configurations table - ",
         await db.execute(
           "UPDATE Configurations SET url = ?, method = ?, body = ? WHERE id = ?;",
           [
@@ -107,7 +109,7 @@ export default class EndpointModel {
         ),
       );
     } catch (error) {
-      Logger.write("ERROR", `Failed to update endpoint - ${error.message}`);
+      Logger.write("WARN", "updateEndpoint() failed - ", error);
       return;
     }
   }
@@ -119,6 +121,7 @@ export default class EndpointModel {
     try {
       Logger.write(
         "INFO",
+        "deleteEndpoint() from Endpoints table - ",
         await db.execute(
           "DELETE FROM Endpoints WHERE id = ?;",
           [id],
@@ -127,13 +130,14 @@ export default class EndpointModel {
 
       Logger.write(
         "INFO",
+        "deleteEndpoint() from Configurations table - ",
         await db.execute(
           "DELETE FROM Configurations WHERE endpoint_id = ?;",
           [id],
         ),
       );
     } catch (error) {
-      Logger.write("ERROR", `Failed to delete endpoint - ${error.message}`);
+      Logger.write("WARN", "deleteEndpoint() failed - ", error);
       return;
     }
   }

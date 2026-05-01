@@ -32,15 +32,15 @@ export default async function apiHandler(
       timeout: 5000,
     };
 
+    Logger.write("DEBUG", "apiHandler() config body - ", JSON.stringify(config.body));
     if (config.body && config.body?.trim() !== "") {
       // only add request body if present
       options.json = JSON.parse(config.body);
     }
 
-    Logger.write("DEBUG", JSON.stringify(config.body));
-    response = await ky(config.url, options).text();
 
-    Logger.write("INFO", response);
+    response = await ky(config.url, options).text();
+    Logger.write("INFO", "apiHandler() response received - ", response);
 
     // when running in cli mode it will not update the db (therefore no ec)
     if (ec) {
@@ -49,7 +49,7 @@ export default async function apiHandler(
   } catch (error) {
     // avoid throwing and error
     // should display message on form
-    Logger.write("WARN", error);
+    Logger.write("WARN", "apiHandler() request failed - ", error);
     return {
       status: "FAILURE",
       message: error.message,

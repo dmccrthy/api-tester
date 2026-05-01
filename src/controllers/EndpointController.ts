@@ -57,10 +57,11 @@ export default class EndpointController {
   }
 
   public deleteEndpoint(index: number): void {
-    Logger.write("DEBUG", `Deleting index ${index}`);
-    Logger.write("DEBUG", `Current array ${this.endpoints}`);
+    Logger.write("INFO", `deleteEndpoint() deleting endpoint with id: ${index}`);
+    Logger.write("DEBUG", "deleteEndpoint() current endpoints (before deletion) - ", this.endpoints);
     const deleted = this.endpoints.splice(index, 1)[0];
     this.selected = this.endpoints[Math.max(index - 1, 0)];
+    Logger.write("DEBUG", "deleteEndpoint() current endpoints (after deletion) - ", this.endpoints);
 
     EndpointModel.deleteEndpoint(deleted.id);
   }
@@ -137,10 +138,10 @@ export default class EndpointController {
   private debounceUpdateEndpoint(endpoint: Endpoint) {
     clearTimeout(this.debounceTimer);
 
-    Logger.write("DEBUG", "Debounce update called");
+    Logger.write("DEBUG", "debounceUpdateEndpoint() called");
     this.debounceTimer = setTimeout(async () => {
       await EndpointModel.updateEndpoint(endpoint);
-      Logger.write("DEBUG", "Debounce update completed");
+      Logger.write("DEBUG", "debounceUpdateEndpoint() update completed");
     }, 5000);
   }
 }

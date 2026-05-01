@@ -107,7 +107,7 @@ export default class Form extends View {
    * Handles submitting the form
    */
   private async submit(): Promise<void> {
-    Logger.write("INFO", "Submiting form.");
+    Logger.write("INFO", "Form.submit() started");
 
     const endpoint: Endpoint = this.ec.getEndpoint();
 
@@ -147,7 +147,7 @@ export default class Form extends View {
 
     // have apiHandler make request
     const status = await apiHandler(this.ec.getEndpointConfig(), this.ec);
-    Logger.write("DEBUG", status);
+    Logger.write("DEBUG", "Form.submit() received status - ", status);
 
     if (status.status === "SUCCESS") {
       this.statusLabel.label = ANSI.textGreen + status.status + ANSI.resetColor;

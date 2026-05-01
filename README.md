@@ -1,10 +1,20 @@
 # Interactive API Tester
 
-
-
 ## Running the Program
 
-See details in ./src/RUNME
+To run the program interactively you need to start the docker container with:
+
+```shell
+docker compose up -d
+```
+
+And then run the program with:
+
+```shell
+deno run dev
+```
+
+*NOTE: For data to be saved to the DB you need a .env file setup. An example one is provided in .env.example*
 
 ## Environment variables
 
@@ -19,5 +29,3 @@ MYSQL_DATABASE=api_tester
 LOG_FILE=api_tester.log
 LOG_LEVEL=DEBUG
 ```
-
-**A .env file is already provided in the repo, and the program can function without it (if necessary).**
