@@ -52,7 +52,7 @@ Deno.test("parseMouse() release event returns MouseClick", () => {
   const result = parseMouse(chunk, "left") as MouseClick;
 
   assertExists(result);
-  assertEquals(result.type, "mouse");
+  assertEquals(result.type, "click");
   assertEquals(result.x, 15);
   assertEquals(result.y, 8);
   assertEquals(result.button, "left");

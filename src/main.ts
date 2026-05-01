@@ -33,9 +33,6 @@ if (args.file) {
   Deno.exit(0);
 }
 
-// check if running from file based on cli args
-//
-
 // run in interactive mode
 View.write(ANSI.mouseTracking.enable + ANSI.cursor.disable);
 

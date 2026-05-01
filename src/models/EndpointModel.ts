@@ -21,6 +21,8 @@ export default class EndpointModel {
     const db = await Database.getInstance();
     let results: Endpoint[] = [];
 
+    Logger.write("DEBUG", "HERRE")
+
     // need a join here to combine data from the 2 tables
     try {
       results = await db.query(`

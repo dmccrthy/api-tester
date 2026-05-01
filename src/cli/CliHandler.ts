@@ -11,27 +11,41 @@ import { EndpointConfig } from "../models/EndpointTypes.ts";
 import Form from "../views/Form.ts";
 import ANSI from "../ANSI.ts";
 
-export default async function cliHandler(file: string): Promise<void> {
+export default async function cliHandler(
+  file: string,
+): Promise<APIResponse | string> {
+  if (!/.json$/.test(file)) {
+    let err = "Error file must end in .json:\n\n" + file;
+    console.error(err);
+
+    return err;
+  }
+
   try {
     const data = Deno.readTextFileSync(file);
     const config: EndpointConfig = JSON.parse(data);
 
     if (!config.url || !config.method) {
+      let err = "Error File is missing URL or Method:\n\n" +
+        JSON.stringify(config);
       console.error(
-        "Error File is missing URL or Method:\n\n" + JSON.stringify(config),
+        err,
       );
-      Deno.exit(1);
+
+      return err;
     }
 
     if (!Form.validateURL(config.url)) {
-      console.error("Error invalid URL:\n\n" + config.url);
-      Deno.exit(1);
+      let err = "Error invalid URL:\n\n" + config.url;
+      console.error(err);
+
+      return err;
     }
 
     // convert body to string instead of object
     // this is needed by the apiHandler which expects string
     if (config.body) {
-        config.body = JSON.stringify(config.body);
+      config.body = JSON.stringify(config.body);
     }
 
     const status = await apiHandler(config);
@@ -43,7 +57,12 @@ export default async function cliHandler(file: string): Promise<void> {
     console.log(statusMessage + "\n");
     console.log("--- API Response ---");
     console.log(status.response);
+
+    return status;
   } catch (error) {
-    console.error("Error API Request failed:\n\n" + error.message);
+    let err = "Error API Request failed:\n\n" + error.message;
+    console.error(err);
+
+    return err;
   }
 }

@@ -152,7 +152,8 @@ export default class Form extends View {
     if (status.status === "SUCCESS") {
       this.statusLabel.label = ANSI.textGreen + status.status + ANSI.resetColor;
     } else {
-      this.statusLabel.label = ANSI.textRed + status.status + " - " + status.message + ANSI.resetColor;
+      this.statusLabel.label = ANSI.textRed + status.status + " - " +
+        status.message + ANSI.resetColor;
     }
     this.render();
   }
@@ -166,7 +167,7 @@ export default class Form extends View {
   public static validateURL(url: string): boolean {
     // this regex pattern is based on this article from geeks for geeks (URLs are very complicated)
     // https://www.geeksforgeeks.org/dsa/check-if-an-url-is-valid-or-not-using-regular-expression/
-    return /^(http(s)?:\/\/.)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/
+    return /^(http(s)?:\/\/)[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/
       .test(url);
   }
 }

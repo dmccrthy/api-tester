@@ -24,7 +24,9 @@ export default class Database {
         username: env.MYSQL_USER,
         password: env.MYSQL_PASSWORD,
         db: env.MYSQL_DATABASE,
+        debug: false,
       });
+      Logger.write("DEBUG", "DB connection formed successfully");
     }
 
     return Database.client;

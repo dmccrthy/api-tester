@@ -9,7 +9,16 @@ deno run --allow-read --allow-write --allow-env --allow-net ./main.ts
 To run the program directly from the CLI you can use this command with arguements:
 
 ```shell
-deno run --allow-read --allow-write --allow-env --allow-net ./main.ts --file <file-path>
+deno run --allow-read --allow-write --allow-env --allow-net ./main.ts --file <./file-path>
 ```
 
 For specific files to use for the CLI arguement you can look at the sample inputs in the Project pdf or look at ./src/test/examples.
+
+
+## Testing
+
+Additionally you can run the test (with the correct permissions) using this command:
+
+```shell
+deno run test
+```

@@ -12,7 +12,7 @@ import Logger from "../controllers/Logger.ts";
 import { EndpointConfig } from "../models/EndpointTypes.ts";
 import ky from "ky";
 
-type APIResponse = {
+export type APIResponse = {
   status: "SUCCESS" | "FAILURE";
   message?: string;
   response: string;
@@ -21,7 +21,7 @@ type APIResponse = {
 export default async function apiHandler(
   config: EndpointConfig,
   ec?: EndpointController,
-): APIResponse {
+): Promise<APIResponse> {
   let response: string;
 
   try {
