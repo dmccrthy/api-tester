@@ -8,76 +8,78 @@
  */
 
 import Logger from "../controllers/Logger.ts";
-import { Input, KeyInput, MouseClick, MouseScroll } from "./InputTypes.ts";
+import {
+  Input,
+  KeyInput,
+  MouseClick,
+  MouseScroll,
+} from "./InputTypes.ts";
 
 /**
- * @param chunk
- * @returns
+ * This function handles key inputs. For the special keys it will map them
+ * to a string like "CTRL+C". For the rest it will decode it as whatever 
+ * character it represents.
  */
 export function parseKey(chunk: Uint8Array): KeyInput {
-  const decoder = new TextDecoder();
-  const input: KeyInput = {
-    type: "special",
-    value: "",
+  // Special key values are stored across 2 objects
+  // one stores the key code, and the other maps that code to a string
+  const SpecialKeyCodes = {
+    CTRL_C: 3,
+    ENTER: 13,
+    ESCAPE: 27,
+    BACKSPACE: 127,
   };
 
-  // each case is a special char (like backspace).
-  // all others should be decoded in default
-  switch (chunk[0]) {
-    case 3:
-      input.value = "CTRL+C";
-      break;
-    case 13:
-      input.value = "enter";
-      break;
-    case 27:
-      input.value = "escape";
-      break;
-    case 127:
-      input.value = "backspace";
-      break;
-    default:
-      input.type = "char";
-      input.value = decoder.decode(chunk);
-  }
+  const KEY_MAP: Record<number, SpecialKey> = {
+    [SpecialKeyCodes.CTRL_C]: "CTRL+C",
+    [SpecialKeyCodes.ENTER]: "enter",
+    [SpecialKeyCodes.ESCAPE]: "escape",
+    [SpecialKeyCodes.BACKSPACE]: "backspace",
+  };
 
-  return input;
-}
 
-/**
- * @param chunk
- * @param currMouseInput
- * @returns
- */
-export function parseMouse(
-  chunk: Uint8Array,
-  currMouseInput: "left" | "right" = "left",
-): MouseClick | MouseScroll | ("left" | "right") {
-  // handle scroll events
-  if (chunk[3] === 96 || chunk[3] === 97) {
+  const code = chunk[0];
+  const specialKey = KEY_MAP[code];
+
+  // if the code maps to a special key (ie. enter, escape) skip decoding it
+  if (specialKey) {
     return {
-      type: "scroll",
-      x: chunk[4] - 32,
-      y: chunk[5] - 32,
-      direction: chunk[3] === 96 ? "up" : "down",
+      type: "special",
+      value: specialKey,
     };
   }
 
+  return {
+    type: "char",
+    value: new TextDecoder().decode(chunk),
+  };
+}
+
+/**
+ * This function handles decoding mouse inputs. this program is designed to use normal 
+ * tracking mode (from xterm) which is just one format for encoding mouse input. Finding 
+ * good documentation of this stuff is a pain, but some info about its structure can 
+ * be found here: https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
+ */
+export function parseMouse(
+  chunk: Uint8Array,
+): MouseClick | MouseScroll | void {
+  const x = chunk[4] - 32;
+  const y = chunk[5] - 32;
   const button = chunk[3] - 32;
 
-  // code 3=release (meaning they have finished pressing the button)
-  // if its not a release we want to wait to save the input until its released
-  if (button !== 3) {
-    currMouseInput = button === 0 ? "left" : "right";
-    return currMouseInput;
-  }
+  if (button === 64 || button === 65) {
+      return {
+        type: "scroll",
+        x: x, 
+        y: y,
+        direction: button === 64 ? "up" : "down",
+      };
+    }
 
-  return {
-    type: "click",
-    x: chunk[4] - 32,
-    y: chunk[5] - 32,
-    button: currMouseInput,
-  };
+    if (button === 3) {
+      return { type: "click", x: x, y: y };
+    }
 }
 
 export default class InputHandler {
@@ -90,38 +92,28 @@ export default class InputHandler {
     // by default Deno.stdin.readable will wait for a \n
     Deno.stdin.setRaw(true);
 
-    let currMouseInput: "left" | "right" = "left";
-
     for await (const chunk of Deno.stdin.readable) {
       Logger.write("DEBUG", "InputHandler.run() raw input received - ", chunk);
 
-      // single char input is relatively easy to handle
-      // we do have to look out for special chars like ESC and Backspace
+      // handle single char input
       if (chunk.length === 1) {
-        const input = parseKey(chunk);
+        const keyInput = parseKey(chunk);
 
         if (
-          input.value === "escape" ||
-          input.value === "CTRL+C"
+          keyInput.value === "escape" ||
+          keyInput.value === "CTRL+C"
         ) return;
 
-        this.callback(input);
-        continue;
+        this.callback(keyInput);
       }
 
-      // handling mouse input here is pretty annoying since its encoded in a very specific way.
-      // this program is designed to use normal tracking (from xterm) which is just one format
-      // for encoding mouse input. Finding good documentation of this stuff is a pain, but some
-      // info about its structure can be found here: https://invisible-island.net/xterm/ctlseqs/ctlseqs.html
+      // handle mouse input
       if (chunk.length === 6) {
-        const input = parseMouse(chunk, currMouseInput);
+        const mouseInput = parseMouse(chunk);
 
-        if (input === "left" || input === "right") {
-          currMouseInput = input;
-          continue;
+        if (mouseInput) {
+          this.callback(mouseInput);
         }
-
-        this.callback(input);
       }
     }
   }

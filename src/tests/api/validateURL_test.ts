@@ -8,19 +8,19 @@ import { assert } from "@std/assert";
 import Form from "../../views/Form.ts";
 
 Deno.test("validateURL() check https URL", () => {
-  assert(Form.validateURL("https://google.com"))
+  assert(Form.validateURL("https://google.com"));
 });
 
 Deno.test("validateURL() check http URL", () => {
-  assert(Form.validateURL("http://neverssl.net"))
+  assert(Form.validateURL("http://neverssl.net"));
 });
 
 Deno.test("validateURL() invalid URL", () => {
-  assert(!Form.validateURL("https://ghfghgfh..gfdgfdg"))
+  assert(!Form.validateURL("https://ghfghgfh..gfdgfdg"));
 });
 
 Deno.test("validateURL() URL without http(s)", () => {
-    // this should be false
+  // this should be false
   assert(!Form.validateURL("google.com"));
 });
 

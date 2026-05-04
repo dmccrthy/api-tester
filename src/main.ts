@@ -1,8 +1,7 @@
 /**
  * This is the primary entrypoint for the application. It initializes the
- * window and input handler, along with cleaning up.
- *
- *  deno run --allow-read --allow-write main.ts
+ * window and input handler, along with cleaning up once the program has
+ * finished.
  *
  * @author Dan McCarthy
  */
@@ -38,10 +37,8 @@ View.write(ANSI.mouseTracking.enable + ANSI.cursor.disable);
 
 try {
   const endpoints = await EndpointModel.getEndpoints();
-  Logger.write("DEBUG", "main.ts - ", endpoints);
   const ec = new EndpointController(endpoints);
 
-  // input is passed from the InputHandler to the actual window which controls that app
   const window = new Window(ec);
   const input = new inputHandler((input: Input) => {
     window.handleInput(input);
@@ -49,7 +46,7 @@ try {
 
   await input.run();
 } catch (error) {
-  Logger.write("ERROR", "main.ts - ", error.message);
+  Logger.write("ERROR", "main.ts - ", error);
 } finally {
   View.write(
     ANSI.mouseTracking.disable + ANSI.cursor.enable + ANSI.clearScreen +

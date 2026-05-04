@@ -25,7 +25,10 @@ export default class Database {
         db: env.MYSQL_DATABASE,
         debug: false,
       });
-      Logger.write("INFO", "Database.getInstance() DB connection formed successfully");
+      Logger.write(
+        "INFO",
+        "Database.getInstance() DB connection formed successfully",
+      );
     }
 
     return Database.client;

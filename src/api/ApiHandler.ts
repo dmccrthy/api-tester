@@ -32,12 +32,15 @@ export default async function apiHandler(
       timeout: 5000,
     };
 
-    Logger.write("DEBUG", "apiHandler() config body - ", JSON.stringify(config.body));
+    Logger.write(
+      "DEBUG",
+      "apiHandler() config body - ",
+      JSON.stringify(config.body),
+    );
     if (config.body && config.body?.trim() !== "") {
       // only add request body if present
       options.json = JSON.parse(config.body);
     }
-
 
     response = await ky(config.url, options).text();
     Logger.write("INFO", "apiHandler() response received - ", response);

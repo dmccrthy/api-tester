@@ -63,7 +63,11 @@ export default class TextOutput extends View {
 
   public override handleInput(input: Input): void {
     if (input.type === "scroll") {
-      Logger.write("DEBUG", "TextOutput() updated scrollOffset - ", this.scrollOffset);
+      Logger.write(
+        "DEBUG",
+        "TextOutput() updated scrollOffset - ",
+        this.scrollOffset,
+      );
 
       if (input.direction === "down") {
         // scroll height is based on the number of lines in the response

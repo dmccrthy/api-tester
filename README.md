@@ -14,7 +14,8 @@ And then run the program with:
 deno run dev
 ```
 
-*NOTE: For data to be saved to the DB you need a .env file setup. An example one is provided in .env.example*
+NOTE: For data to be saved to the DB you need a .env file setup. An example one
+is provided in .env.example_
 
 ## Environment variables
 

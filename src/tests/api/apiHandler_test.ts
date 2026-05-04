@@ -6,7 +6,5 @@
 
 import { assert } from "@std/assert";
 
-
 Deno.test("validateURL() check https URL", () => {
-
 });

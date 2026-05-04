@@ -79,7 +79,11 @@ export default class Sidebar extends View {
 
   public override handleInput(input: Input): void {
     if (input.type === "scroll") {
-      Logger.write("DEBUG", "Sidebar() updated scrollOffset - ", this.scrollOffset);
+      Logger.write(
+        "DEBUG",
+        "Sidebar() updated scrollOffset - ",
+        this.scrollOffset,
+      );
 
       if (input.direction === "down") {
         // stop letting you scroll once you've hit the create button at the end
@@ -121,7 +125,11 @@ export default class Sidebar extends View {
     return () => {
       this.ec.selected = this.ec.endpoints[index];
       this.form.render();
-      Logger.write("DEBUG", "Sidebar() selected new endpoint - ", this.ec.selected);
+      Logger.write(
+        "DEBUG",
+        "Sidebar() selected new endpoint - ",
+        this.ec.selected,
+      );
     };
   }
 

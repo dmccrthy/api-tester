@@ -57,11 +57,22 @@ export default class EndpointController {
   }
 
   public deleteEndpoint(index: number): void {
-    Logger.write("INFO", `deleteEndpoint() deleting endpoint with id: ${index}`);
-    Logger.write("DEBUG", "deleteEndpoint() current endpoints (before deletion) - ", this.endpoints);
+    Logger.write(
+      "INFO",
+      `deleteEndpoint() deleting endpoint with id: ${index}`,
+    );
+    Logger.write(
+      "DEBUG",
+      "deleteEndpoint() current endpoints (before deletion) - ",
+      this.endpoints,
+    );
     const deleted = this.endpoints.splice(index, 1)[0];
     this.selected = this.endpoints[Math.max(index - 1, 0)];
-    Logger.write("DEBUG", "deleteEndpoint() current endpoints (after deletion) - ", this.endpoints);
+    Logger.write(
+      "DEBUG",
+      "deleteEndpoint() current endpoints (after deletion) - ",
+      this.endpoints,
+    );
 
     EndpointModel.deleteEndpoint(deleted.id);
   }

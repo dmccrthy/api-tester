@@ -10,7 +10,6 @@ export type MouseClick = {
   type: "click";
   x: number;
   y: number;
-  button: "left" | "right";
 };
 
 export type MouseScroll = {
@@ -21,12 +20,10 @@ export type MouseScroll = {
 };
 
 export type KeyInput = {
-  type: "char" | "special";
-  value: string | SpecialKey;
-};
+  type: "char";
+  value: string;
+} | { type: "special"; value: SpecialKey };
 
-// right know special keys are stored as this union
-// in the future I may expand it to include others like arrow keys
-export type SpecialKey = "enter" | "backspace" | "escape" | "CTRL+C";
+export type SpecialKey = "CTRL+C" | "enter" | "escape" | "backspace";
 
 export type Input = KeyInput | MouseClick | MouseScroll;

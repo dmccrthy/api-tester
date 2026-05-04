@@ -31,8 +31,8 @@ export default class Logger {
       let output: string = "";
       for (const message of args) {
         output += typeof message === "object"
-        ? JSON.stringify(message)
-        : String(message);
+          ? JSON.stringify(message)
+          : String(message);
       }
 
       fs.appendFileSync(
