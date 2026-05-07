@@ -23,15 +23,17 @@ export default class EndpointModel {
 
     // need a join here to combine data from the 2 tables
     try {
-      results = await db.query(`
+      results = db.prepare(`
         SELECT e.id, e.name, e.result, c.id as config_id, c.url, c.method, c.body 
         FROM Endpoints e
         LEFT JOIN Configurations c ON e.id = c.endpoint_id
-      `);
+      `).all();
     } catch (error) {
       Logger.write("WARN", "getEndpoints() failed - ", error);
       return results;
     }
+
+    Logger.write("DEBUG", "getEndpoints() retrieved results - ", results);
 
     // map to array of endpoints (and remove any null values)
     return results.map((row) => ({
@@ -55,24 +57,22 @@ export default class EndpointModel {
       Logger.write(
         "INFO",
         "createEndpoint() insert into Endpoints table - ",
-        await db.execute(
+        db.prepare(
           "INSERT INTO Endpoints (id, name, result) VALUES (?, ?, ?);",
-          [endpoint.id, endpoint.name, endpoint.result],
-        ),
+        ).run(endpoint.id, endpoint.name, endpoint.result),
       );
 
       Logger.write(
         "INFO",
         "createEndpoint() insert into Configurations table - ",
-        await db.execute(
+        db.prepare(
           "INSERT INTO Configurations (id, endpoint_id, url, method, body) VALUES (?, ?, ?, ?, ?);",
-          [
-            endpoint.config.id,
-            endpoint.id,
-            endpoint.config.url,
-            endpoint.config.method,
-            endpoint.config.body,
-          ],
+        ).run(
+          endpoint.config.id,
+          endpoint.id,
+          endpoint.config.url,
+          endpoint.config.method,
+          endpoint.config.body,
         ),
       );
     } catch (error) {
@@ -89,23 +89,21 @@ export default class EndpointModel {
       Logger.write(
         "INFO",
         "updateEndpoint() update on Endpoints table - ",
-        await db.execute(
+        db.prepare(
           "UPDATE Endpoints SET name = ?, result = ? WHERE id = ?;",
-          [endpoint.name, endpoint.result, endpoint.id],
-        ),
+        ).run(endpoint.name, endpoint.result, endpoint.id),
       );
 
       Logger.write(
         "INFO",
         "updateEndpoint() update on Configurations table - ",
-        await db.execute(
+        db.prepare(
           "UPDATE Configurations SET url = ?, method = ?, body = ? WHERE id = ?;",
-          [
-            endpoint.config.url,
-            endpoint.config.method,
-            endpoint.config.body,
-            endpoint.config.id,
-          ],
+        ).run(
+          endpoint.config.url,
+          endpoint.config.method,
+          endpoint.config.body,
+          endpoint.config.id,
         ),
       );
     } catch (error) {
@@ -122,19 +120,17 @@ export default class EndpointModel {
       Logger.write(
         "INFO",
         "deleteEndpoint() from Endpoints table - ",
-        await db.execute(
+        db.prepare(
           "DELETE FROM Endpoints WHERE id = ?;",
-          [id],
-        ),
+        ).run(id),
       );
 
       Logger.write(
         "INFO",
         "deleteEndpoint() from Configurations table - ",
-        await db.execute(
+        db.prepare(
           "DELETE FROM Configurations WHERE endpoint_id = ?;",
-          [id],
-        ),
+        ).run(id),
       );
     } catch (error) {
       Logger.write("WARN", "deleteEndpoint() failed - ", error);

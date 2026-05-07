@@ -5,26 +5,20 @@
  * @author Dan McCarthy
  */
 
-import { Client } from "mysql";
-import { load } from "@std/dotenv";
+import { DatabaseSync } from "node:sqlite";
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import Logger from "./Logger.ts";
 export default class Database {
-  private static client: Client | null = null;
+  private static client: DatabaseSync | null = null;
 
-  public static async getInstance(): Promise<Client> {
+  public static async getInstance(): Promise<DatabaseSync> {
     if (!Database.client) {
-      const env = await load();
-      Logger.write("DEBUG", "Database.getInstance() loaded .env - ", env);
+      const schema = path.resolve(import.meta.dirname!, "schema.sql");
 
-      // create db connection using settings from the .env file
-      Database.client = await new Client().connect({
-        hostname: env.MYSQL_ADDRESS,
-        port: Number(env.MYSQL_PORT),
-        username: env.MYSQL_USER,
-        password: env.MYSQL_PASSWORD,
-        db: env.MYSQL_DATABASE,
-        debug: false,
-      });
+      Database.client = new DatabaseSync("endpoints.db");
+      Database.client.exec(readFileSync(schema, "utf-8"));
+
       Logger.write(
         "INFO",
         "Database.getInstance() DB connection formed successfully",
@@ -37,9 +31,9 @@ export default class Database {
   /**
    * Handle closing any connections when program ends
    */
-  public static async close(): Promise<void> {
+  public static close(): void {
     if (Database.client) {
-      await Database.client.close();
+      Database.client.close();
       Database.client = null;
     }
   }

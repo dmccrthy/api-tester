@@ -1,13 +1,13 @@
 -- Example scheme for api tester
 -- these tables need to be implemented in the specified db.
 
-CREATE TABLE Endpoints (
+CREATE TABLE IF NOT EXISTS Endpoints (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name TEXT,
     result TEXT
 );
 
-CREATE TABLE Configurations (
+CREATE TABLE IF NOT EXISTS Configurations (
     id INT AUTO_INCREMENT PRIMARY KEY,
     endpoint_id INT,
     url VARCHAR(255),

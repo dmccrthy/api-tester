@@ -15,18 +15,13 @@ deno run dev
 ```
 
 NOTE: For data to be saved to the DB you need a .env file setup. An example one
-is provided in .env.example_
+is provided in .env.example.
 
 ## Environment variables
 
 You can specify the following environment variables in you .env file:
 
 ```shell
-MYSQL_ADDRESS=127.0.0.1
-MYSQL_PORT=3306
-MYSQL_USER=admin
-MYSQL_PASSWORD=admin
-MYSQL_DATABASE=api_tester
 LOG_FILE=api_tester.log
 LOG_LEVEL=DEBUG
 ```

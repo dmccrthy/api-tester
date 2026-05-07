@@ -5,7 +5,7 @@
  * @author Dan McCarthy
  */
 
-import fs from "node:fs";
+import { appendFileSync } from "node:fs";
 
 export type LOG_LEVEL = "DEBUG" | "INFO" | "WARN" | "ERROR";
 
@@ -35,7 +35,7 @@ export default class Logger {
           : String(message);
       }
 
-      fs.appendFileSync(
+      appendFileSync(
         this.file,
         `${new Date().toISOString()} [${level}] ${output}\n`,
       );
